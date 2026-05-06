@@ -11,7 +11,7 @@ datasource db {
 }
 
 // ============================================
-// USERS & AUTHENTICATION (BetterAuth)
+// BETTER AUTH MODELS
 // ============================================
 
 model User {
@@ -23,7 +23,11 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  // Relations
+  // BetterAuth relations
+  sessions  Session[]
+  accounts  Account[]
+
+  // App relations
   ownedOrganizations Organization[]      @relation("OrganizationOwner")
   memberships        OrganizationMember[]
   createdProjects    Project[]           @relation("ProjectCreator")
@@ -32,6 +36,45 @@ model User {
   notifications      Notification[]
 
   @@map("users")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String   @id
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  @@map("verifications")
 }
 
 // ============================================
