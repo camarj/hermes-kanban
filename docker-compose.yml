@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hermes-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hermes
+      POSTGRES_PASSWORD: hermes_password
+      POSTGRES_DB: hermes_kanban
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hermes -d hermes_kanban"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
