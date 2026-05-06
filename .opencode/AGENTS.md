@@ -138,6 +138,88 @@ Aplicar estilos desde `.claude/skills/inteliside-design/colors_and_type.css`:
 - MCP servers configurables por agente
 - Webhooks para integraciones externas
 
+## Engram Memory System
+
+### Project Configuration
+
+**Project name:** `hermes-kanban-dev`
+
+Configured in `.engram/config.json`. Engram auto-detects this project from the repo root.
+
+### MCP Tools Available (14 agent-facing tools)
+
+**Save & Update:**
+- `mem_save` — Save a memory (title, type, What/Why/Where/Learned)
+- `mem_update` — Update an existing memory
+- `mem_delete` — Delete a memory
+- `mem_suggest_topic_key` — Get suggested topic key for a memory
+
+**Search & Retrieve:**
+- `mem_search` — Full-text search across memories
+- `mem_context` — Load recent context from previous sessions
+- `mem_timeline` — Show chronological context around an observation
+- `mem_get_observation` — Get a specific observation by ID
+
+**Session Lifecycle:**
+- `mem_session_start` — Start a new session
+- `mem_session_end` — End current session
+- `mem_session_summary` — Get summary of current session
+
+**Conflict Surfacing:**
+- `mem_judge` — Compare two observations for conflicts
+- `mem_compare` — Deep comparison of observations
+
+**Utilities:**
+- `mem_current_project` — Confirm which project Engram detected
+- `mem_stats` — Show memory system statistics
+
+### When to Save Memories
+
+Save to engram when:
+- **Architectural decision made** → type: `decision`, topic: `architecture/*`
+- **Bug fixed** → type: `bugfix`, topic: `bugs/*`
+- **Pattern discovered** → type: `pattern`, topic: `patterns/*`
+- **Integration completed** → type: `milestone`, topic: `features/*`
+- **Convention established** → type: `convention`, topic: `conventions/*`
+
+### Memory Protocol
+
+Follow the What/Why/Where/Learned structure:
+
+```
+What: Brief description of what was done
+Why: Context and motivation
+Where: Files, functions, or components affected
+Learned: Key insights or gotchas for future reference
+```
+
+### Example Usage
+
+```bash
+# Check current project
+mem_current_project()
+
+# Load context from previous sessions
+mem_context(project: "hermes-kanban-dev")
+
+# Search for past decisions
+mem_search(project: "hermes-kanban-dev", query: "authentication")
+
+# Save a decision
+mem_save(
+  title: "Use BetterAuth for authentication",
+  type: "decision",
+  project: "hermes-kanban-dev",
+  topic_key: "architecture/auth",
+  content: {
+    what: "Configured BetterAuth for email/password + OAuth providers",
+    why: "Need multi-tenant auth with organization scoping",
+    where: "lib/auth/better-auth.ts, app/api/auth/[...all]/route.ts",
+    learned: "BetterAuth requires adapter pattern for Prisma, session strategy must be JWT for serverless"
+  }
+)
+```
+
 ## Agent Skills
 
 ### Issue tracker

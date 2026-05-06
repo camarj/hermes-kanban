@@ -51,6 +51,10 @@ prisma/migrations/
 # Hermes
 .hermes/
 
+# Engram (keep config.json, ignore sync chunks)
+.engram/*.json.gz
+.engram/sessions/
+
 # Scratch
 .scratch/
 
