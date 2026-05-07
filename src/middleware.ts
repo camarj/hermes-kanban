@@ -12,7 +12,9 @@ export async function middleware(request: NextRequest) {
   }
   
   const isAuthPage = pathname === "/login" || pathname === "/register"
-  const isProtectedPage = pathname === "/" || pathname.startsWith("/dashboard")
+  const isProtectedPage = pathname === "/" || 
+                          pathname.startsWith("/dashboard") ||
+                          pathname.startsWith("/onboarding")
   
   // Check for BetterAuth session cookie
   const sessionCookie = request.cookies.get("better-auth.session_token") ||

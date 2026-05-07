@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,12 +9,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from "next/link"
 
 export function RegisterForm() {
+  const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -32,7 +33,8 @@ export function RegisterForm() {
         throw new Error(data.message || "Failed to sign up")
       }
 
-      setSuccess(true)
+      router.push("/dashboard")
+      router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
@@ -64,26 +66,6 @@ export function RegisterForm() {
       setError(err instanceof Error ? err.message : "Something went wrong")
       setIsLoading(false)
     }
-  }
-
-  if (success) {
-    return (
-      <Card className="border-[#D4CFC7] bg-white">
-        <CardHeader>
-          <CardTitle className="font-serif text-2xl">Check your email</CardTitle>
-          <CardDescription className="text-[#6B6560]">
-            We've sent you a verification link. Please check your email to complete your registration.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/login">
-            <Button className="w-full bg-[#2D9AA5] hover:bg-[#1A7A82]">
-              Go to Login
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
-    )
   }
 
   return (

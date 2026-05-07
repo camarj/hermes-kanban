@@ -1,10 +1,22 @@
+import { redirect } from "next/navigation"
+import Link from "next/link"
 import { requireAuth } from "@/lib/auth/session"
+import { hasOrganizations, getUserOrganizations } from "@/lib/organization/helpers"
 import { Button } from "@/components/ui/button"
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 
 export default async function DashboardPage() {
   const session = await requireAuth()
+
+  // Check if user has organizations, if not redirect to onboarding
+  const userHasOrgs = await hasOrganizations(session.user.id)
+  if (!userHasOrgs) {
+    redirect("/onboarding/create-organization")
+  }
+
+  // Get user's organizations
+  const organizations = await getUserOrganizations(session.user.id)
 
   async function signOut() {
     "use server"
@@ -47,6 +59,37 @@ export default async function DashboardPage() {
           <p className="text-[#6B6560] mb-6">
             You are successfully authenticated. This is your dashboard.
           </p>
+
+          {/* Organizations Section */}
+          <div className="mb-8">
+            <h3 className="font-medium text-[#070605] mb-4">Your Organizations</h3>
+            {organizations.length > 0 ? (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {organizations.map((org) => (
+                  <Link 
+                    key={org.id} 
+                    href={`/${org.slug}`}
+                    className="rounded-lg border border-[#D4CFC7] p-4 hover:border-[#2D9AA5] hover:shadow-sm transition-all cursor-pointer"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2D9AA5] text-white font-semibold flex-shrink-0">
+                        {org.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium text-[#070605] truncate">{org.name}</h4>
+                        <p className="text-sm text-[#6B6560] truncate">{org.objective || "No objective set"}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 border border-dashed border-[#D4CFC7] rounded-lg">
+                <p className="text-[#6B6560]">No organizations yet</p>
+              </div>
+            )}
+          </div>
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-lg border border-[#D4CFC7] p-4">
               <h3 className="font-medium text-[#070605]">Organizations</h3>
