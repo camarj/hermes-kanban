@@ -10,6 +10,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-fraunces);
+  --font-serif: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,85 +49,198 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ============================================================
+   Inteliside Design System v2 — Editorial primitives.
+   Source: ~/.claude/skills/inteliside-design/colors_and_type.css
+   These primitives feed the shadcn token layer below.
+   ============================================================ */
 :root {
-  /* Inteliside Design System - Light Mode */
-  --background: #F5F1EB;
-  --foreground: #070605;
-  --card: #FFFFFF;
-  --card-foreground: #070605;
-  --popover: #FFFFFF;
-  --popover-foreground: #070605;
-  --primary: #2D9AA5;
-  --primary-foreground: #FFFFFF;
-  --secondary: #E8E4DE;
-  --secondary-foreground: #070605;
-  --muted: #E8E4DE;
-  --muted-foreground: #6B6560;
-  --accent: #2D9AA5;
-  --accent-foreground: #FFFFFF;
-  --destructive: #DC2626;
-  --border: #D4CFC7;
-  --input: #D4CFC7;
-  --ring: #2D9AA5;
-  --chart-1: #2D9AA5;
-  --chart-2: #1A7A82;
-  --chart-3: #125A60;
-  --chart-4: #0A3A3E;
-  --chart-5: #041A1C;
+  /* Brand */
+  --teal-500: #2D9AA5;
+  --teal-600: #268590;
+  --teal-700: #1F6F78;
+  --teal-50:  #EAF4F5;
+  --teal-100: #D1E7EA;
+
+  /* Ivory scale (warm neutrals) */
+  --ivory-50:  #FAF7F2;
+  --ivory-100: #F5F1EB;
+  --ivory-200: #EDE8DE;
+  --ivory-300: #E0D9CC;
+  --ivory-400: #C9C0B0;
+  --ivory-500: #A89F8E;
+
+  /* Warm ink scale */
+  --ink-50:   #1C1A17;
+  --ink-100:  #141210;
+  --ink-200:  #0F0D0B;
+  --ink-900:  #070605;
+
+  /* Hairline rules — never solid borders */
+  --rule-light:        rgba(20, 18, 16, 0.14);
+  --rule-soft-light:   rgba(20, 18, 16, 0.08);
+  --rule-strong-light: rgba(20, 18, 16, 0.30);
+  --rule-dark:         rgba(237, 232, 222, 0.12);
+  --rule-soft-dark:    rgba(237, 232, 222, 0.06);
+  --rule-strong-dark:  rgba(237, 232, 222, 0.28);
+
+  /* Earth-toned semantics — never neon */
+  --success: #5A8A42;
+  --warning: #C67E2F;
+  --danger:  #B64545;
+  --info:    #3A7A95;
+}
+
+/* ============================================================
+   shadcn token layer mapped to Inteliside primitives.
+   Components that use Tailwind utilities like `bg-background`,
+   `text-muted-foreground`, `border-border` flow through here.
+   ============================================================ */
+
+:root {
+  /* Light mode — warm ivory canvas */
+  --background: var(--ivory-100);
+  --foreground: var(--ink-100);
+  --card: var(--ivory-50);
+  --card-foreground: var(--ink-100);
+  --popover: var(--ivory-50);
+  --popover-foreground: var(--ink-100);
+
+  --primary: var(--teal-500);
+  --primary-foreground: var(--ivory-50);
+  --secondary: var(--ivory-200);
+  --secondary-foreground: var(--ink-100);
+
+  --muted: var(--ivory-200);
+  --muted-foreground: #4A453D;
+
+  --accent: var(--ivory-200);
+  --accent-foreground: var(--ink-100);
+  --accent-wash: rgba(45, 154, 165, 0.08);
+
+  --destructive: var(--danger);
+  --border: var(--rule-light);
+  --input: var(--rule-light);
+  --ring: var(--teal-500);
+
+  --chart-1: var(--teal-500);
+  --chart-2: var(--teal-600);
+  --chart-3: var(--teal-700);
+  --chart-4: var(--ivory-500);
+  --chart-5: var(--ink-100);
+
   --radius: 0.5rem;
-  --sidebar: #F5F1EB;
-  --sidebar-foreground: #070605;
-  --sidebar-primary: #2D9AA5;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #E8E4DE;
-  --sidebar-accent-foreground: #070605;
-  --sidebar-border: #D4CFC7;
-  --sidebar-ring: #2D9AA5;
+
+  --sidebar: var(--ivory-100);
+  --sidebar-foreground: var(--ink-100);
+  --sidebar-primary: var(--teal-500);
+  --sidebar-primary-foreground: var(--ivory-50);
+  --sidebar-accent: var(--ivory-200);
+  --sidebar-accent-foreground: var(--ink-100);
+  --sidebar-border: var(--rule-light);
+  --sidebar-ring: var(--teal-500);
 }
 
 .dark {
-  /* Inteliside Design System - Dark Mode */
-  --background: #070605;
-  --foreground: #F5F1EB;
-  --card: #1A1816;
-  --card-foreground: #F5F1EB;
-  --popover: #1A1816;
-  --popover-foreground: #F5F1EB;
-  --primary: #2D9AA5;
-  --primary-foreground: #FFFFFF;
-  --secondary: #2A2826;
-  --secondary-foreground: #F5F1EB;
-  --muted: #2A2826;
-  --muted-foreground: #9A9590;
-  --accent: #2D9AA5;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --border: #3A3836;
-  --input: #3A3836;
-  --ring: #2D9AA5;
-  --chart-1: #2D9AA5;
-  --chart-2: #3ABAC5;
-  --chart-3: #5ACAD5;
-  --chart-4: #7ADAe5;
-  --chart-5: #9AEAF5;
-  --sidebar: #070605;
-  --sidebar-foreground: #F5F1EB;
-  --sidebar-primary: #2D9AA5;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #2A2826;
-  --sidebar-accent-foreground: #F5F1EB;
-  --sidebar-border: #3A3836;
-  --sidebar-ring: #2D9AA5;
+  /* Dark mode — warm ink canvas */
+  --background: var(--ink-900);
+  --foreground: #EDE8DE;
+  --card: var(--ink-200);
+  --card-foreground: #EDE8DE;
+  --popover: var(--ink-200);
+  --popover-foreground: #EDE8DE;
+
+  --primary: var(--teal-500);
+  --primary-foreground: var(--ivory-50);
+  --secondary: var(--ink-100);
+  --secondary-foreground: #EDE8DE;
+
+  --muted: var(--ink-100);
+  --muted-foreground: #B8B0A1;
+
+  --accent: var(--ink-100);
+  --accent-foreground: #EDE8DE;
+  --accent-wash: rgba(45, 154, 165, 0.14);
+
+  --destructive: var(--danger);
+  --border: var(--rule-dark);
+  --input: var(--rule-dark);
+  --ring: var(--teal-500);
+
+  --chart-1: var(--teal-500);
+  --chart-2: #3FB0BC;
+  --chart-3: var(--ivory-500);
+  --chart-4: var(--ivory-300);
+  --chart-5: #EDE8DE;
+
+  --sidebar: var(--ink-900);
+  --sidebar-foreground: #EDE8DE;
+  --sidebar-primary: var(--teal-500);
+  --sidebar-primary-foreground: var(--ivory-50);
+  --sidebar-accent: var(--ink-100);
+  --sidebar-accent-foreground: #EDE8DE;
+  --sidebar-border: var(--rule-dark);
+  --sidebar-ring: var(--teal-500);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "ss02";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Editorial typography — Fraunces serif for display + h1/h2,
+     Geist medium for h3/h4, Geist Mono for eyebrows. */
+  h1 {
+    font-family: var(--font-fraunces);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    font-variation-settings: "opsz" 144;
+  }
+  h2 {
+    font-family: var(--font-fraunces);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  h3 {
+    font-family: var(--font-geist-sans);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  h4 {
+    font-family: var(--font-geist-sans);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  /* Editorial helpers */
+  .display {
+    font-family: var(--font-fraunces);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .serif-italic {
+    font-family: var(--font-fraunces);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .eyebrow {
+    font-family: var(--font-geist-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted-foreground);
   }
 }

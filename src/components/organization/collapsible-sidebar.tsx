@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { OrganizationSwitcher } from "@/components/organization/organization-switcher"
 import { SignOutButton } from "@/components/auth/sign-out-button"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 import {
   Tooltip,
   TooltipContent,
@@ -180,7 +181,10 @@ export function CollapsibleSidebar({
                   <div className="text-xs text-[#6B6560] capitalize">{userRole}</div>
                 </TooltipContent>
               </Tooltip>
-              <SignOutButton />
+              <div className="flex flex-col items-center gap-1">
+                <ThemeToggle />
+                <SignOutButton />
+              </div>
             </div>
           ) : (
             <div className="flex items-center justify-between">
@@ -199,7 +203,10 @@ export function CollapsibleSidebar({
                   </span>
                 </div>
               </div>
-              <SignOutButton />
+              <div className="flex items-center gap-1">
+                <ThemeToggle />
+                <SignOutButton />
+              </div>
             </div>
           )}
         </div>
