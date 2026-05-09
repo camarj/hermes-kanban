@@ -311,8 +311,8 @@ export function CreateAgentDialog({
                         onClick={() => setSpecialization(key as WorkerSpecialization)}
                         className={`p-3 rounded-lg border-2 flex items-center gap-2 transition-all text-left ${
                           specialization === key
-                            ? "border-[#6B6560] bg-[#6B6560]/5"
-                            : "border-border hover:border-[#6B6560]/50"
+                            ? "border-foreground/50 bg-foreground/5"
+                            : "border-border hover:border-foreground/30"
                         }`}
                       >
                         {WORKER_ICONS[key as WorkerSpecialization]}
@@ -403,7 +403,7 @@ export function CreateAgentDialog({
                           <Badge
                             key={skill}
                             variant="secondary"
-                            className="bg-muted text-foreground hover:bg-[#D4CFC7] cursor-pointer"
+                            className="bg-muted text-foreground hover:bg-accent cursor-pointer"
                             onClick={() => removeSkill(skill)}
                           >
                             {skill}

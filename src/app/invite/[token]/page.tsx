@@ -92,7 +92,7 @@ export default function AcceptInvitationPage() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md border-border">
           <CardContent className="p-8 text-center">
-            <XCircle className="mx-auto h-12 w-12 text-red-500" />
+            <XCircle className="mx-auto h-12 w-12 text-destructive" />
             <h2 className="mt-4 font-serif text-xl font-semibold text-foreground">
               Invitation Error
             </h2>

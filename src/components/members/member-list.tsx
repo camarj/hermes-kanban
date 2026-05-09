@@ -63,7 +63,7 @@ const ROLE_ICONS = {
 }
 
 const ROLE_COLORS = {
-  owner: "bg-purple-100 text-purple-700",
+  owner: "bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-300",
   board: "bg-info/10 text-info",
   member: "bg-muted text-muted-foreground"
 }
