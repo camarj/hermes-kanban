@@ -13,13 +13,30 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: 'public-chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+      },
+      testMatch: /(auth|landing|onboarding)\.spec\.ts/,
+    },
+    {
+      name: 'authenticated-chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: 'tests/e2e/.auth/user.json',
+      },
+      dependencies: ['setup'],
+      testIgnore: /(auth|landing|onboarding|setup)\.spec\.ts/,
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 })

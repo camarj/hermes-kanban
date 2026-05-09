@@ -87,6 +87,8 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
         return (
           <Card
             key={agent.id}
+            data-testid="agent-card"
+            data-agent-id={agent.id}
             className={`border-[#D4CFC7] hover:shadow-md transition-shadow ${
               !agent.isActive ? "opacity-60" : ""
             }`}

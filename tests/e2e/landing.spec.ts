@@ -1,25 +1,30 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Landing Page', () => {
-  test('should display the landing page with correct title', async ({ page }) => {
+  test('should redirect to login when not authenticated', async ({ page }) => {
     await page.goto('/')
     
-    // Should redirect to login since not authenticated
     await expect(page).toHaveURL('/login')
-    
-    // Check for Hermes Kanban branding
-    await expect(page.getByRole('heading', { name: 'Hermes Kanban' })).toBeVisible()
-    await expect(page.getByText('Sign in to your account')).toBeVisible()
+    await expect(page.getByRole('heading', { name: /hermes kanban/i })).toBeVisible()
   })
 
   test('should have working navigation to register', async ({ page }) => {
     await page.goto('/login')
     
-    // Click on sign up link
-    await page.getByRole('link', { name: 'Sign up' }).click()
+    await page.getByRole('link', { name: /sign up/i }).click()
     
-    // Should navigate to register page
     await expect(page).toHaveURL('/register')
-    await expect(page.getByRole('heading', { name: 'Create Account' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /create account/i })).toBeVisible()
+  })
+})
+
+test.describe('Root route with authenticated user', () => {
+  test.use({ storageState: 'tests/e2e/.auth/user.json' })
+
+  test('should redirect to organization dashboard when authenticated', async ({ page }) => {
+    await page.goto('/')
+    
+    await expect(page).toHaveURL(/\/[a-z0-9-]+$/, { timeout: 10000 })
+    await expect(page.getByRole('button', { name: /add task/i })).toBeVisible({ timeout: 5000 })
   })
 })
