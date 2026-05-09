@@ -31,7 +31,7 @@ export default async function OrgLayout({
   const organizations = await getUserOrganizations(session.user.id)
 
   return (
-    <div className="min-h-screen bg-[#F5F1EB]">
+    <div className="min-h-screen bg-background">
       <div className="flex h-screen relative">
         <CollapsibleSidebar
           orgSlug={orgSlug}

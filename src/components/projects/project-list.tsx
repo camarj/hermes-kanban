@@ -51,10 +51,10 @@ interface ProjectListProps {
 }
 
 const STATUS_COLORS = {
-  active: "bg-green-100 text-green-700",
-  paused: "bg-yellow-100 text-yellow-700",
-  completed: "bg-blue-100 text-blue-700",
-  archived: "bg-gray-100 text-gray-600"
+  active: "bg-success/10 text-success",
+  paused: "bg-warning/10 text-warning",
+  completed: "bg-info/10 text-info",
+  archived: "bg-muted text-muted-foreground"
 }
 
 const STATUS_LABELS = {
@@ -135,26 +135,26 @@ export function ProjectList({
 
   if (projects.length === 0) {
     return (
-      <div className="text-center py-12 border border-dashed border-[#D4CFC7] rounded-lg">
-        <FolderKanban className="mx-auto h-12 w-12 text-[#6B6560] mb-4" />
-        <h3 className="text-lg font-medium text-[#070605] mb-2">No projects yet</h3>
-        <p className="text-sm text-[#6B6560] mb-4">
+      <div className="text-center py-12 border border-dashed border-border rounded-lg">
+        <FolderKanban className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-medium text-foreground mb-2">No projects yet</h3>
+        <p className="text-sm text-muted-foreground mb-4">
           Create your first project to get started
         </p>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger
             render={
-              <Button className="bg-[#2D9AA5] hover:bg-[#1A7A82]">
+              <Button className="bg-primary hover:bg-primary/90">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Project
               </Button>
             }
           />
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-card">
             <form onSubmit={handleCreate}>
               <DialogHeader>
                 <DialogTitle className="font-serif">Create New Project</DialogTitle>
-                <DialogDescription className="text-[#6B6560]">
+                <DialogDescription className="text-muted-foreground">
                   Add a new project to your organization
                 </DialogDescription>
               </DialogHeader>
@@ -167,7 +167,7 @@ export function ProjectList({
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter project name"
                     required
-                    className="border-[#D4CFC7] focus:border-[#2D9AA5]"
+                    className="border-border focus:border-primary"
                   />
                 </div>
                 <div className="space-y-2">
@@ -178,13 +178,13 @@ export function ProjectList({
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the project..."
                     rows={3}
-                    className="border-[#D4CFC7] focus:border-[#2D9AA5]"
+                    className="border-border focus:border-primary"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-status">Status</Label>
                   <Select value={status} onValueChange={(v) => setStatus(v as Project["status"])}>
-                    <SelectTrigger className="border-[#D4CFC7]">
+                    <SelectTrigger className="border-border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -201,14 +201,14 @@ export function ProjectList({
                   type="button"
                   variant="outline"
                   onClick={() => setIsCreateOpen(false)}
-                  className="border-[#D4CFC7]"
+                  className="border-border"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isLoading || !name.trim()}
-                  className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {isLoading ? "Creating..." : "Create Project"}
                 </Button>
@@ -223,23 +223,23 @@ export function ProjectList({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <p className="text-sm text-[#6B6560]">
+        <p className="text-sm text-muted-foreground">
           {projects.length} project{projects.length !== 1 ? "s" : ""}
         </p>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger
             render={
-              <Button className="bg-[#2D9AA5] hover:bg-[#1A7A82]">
+              <Button className="bg-primary hover:bg-primary/90">
                 <Plus className="mr-2 h-4 w-4" />
                 New Project
               </Button>
             }
           />
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-card">
             <form onSubmit={handleCreate}>
               <DialogHeader>
                 <DialogTitle className="font-serif">Create New Project</DialogTitle>
-                <DialogDescription className="text-[#6B6560]">
+                <DialogDescription className="text-muted-foreground">
                   Add a new project to your organization
                 </DialogDescription>
               </DialogHeader>
@@ -252,7 +252,7 @@ export function ProjectList({
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter project name"
                     required
-                    className="border-[#D4CFC7] focus:border-[#2D9AA5]"
+                    className="border-border focus:border-primary"
                   />
                 </div>
                 <div className="space-y-2">
@@ -263,13 +263,13 @@ export function ProjectList({
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the project..."
                     rows={3}
-                    className="border-[#D4CFC7] focus:border-[#2D9AA5]"
+                    className="border-border focus:border-primary"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-status">Status</Label>
                   <Select value={status} onValueChange={(v) => setStatus(v as Project["status"])}>
-                    <SelectTrigger className="border-[#D4CFC7]">
+                    <SelectTrigger className="border-border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -286,14 +286,14 @@ export function ProjectList({
                   type="button"
                   variant="outline"
                   onClick={() => setIsCreateOpen(false)}
-                  className="border-[#D4CFC7]"
+                  className="border-border"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isLoading || !name.trim()}
-                  className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {isLoading ? "Creating..." : "Create Project"}
                 </Button>
@@ -305,15 +305,15 @@ export function ProjectList({
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
-          <Card key={project.id} className="border-[#D4CFC7] hover:shadow-md transition-shadow">
+          <Card key={project.id} className="border-border transition-colors">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#2D9AA5]/10 flex items-center justify-center">
-                    <FolderKanban className="h-5 w-5 text-[#2D9AA5]" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <FolderKanban className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-base font-medium text-[#070605]">
+                    <CardTitle className="text-base font-medium text-foreground">
                       {project.name}
                     </CardTitle>
                     <Badge 
@@ -328,12 +328,12 @@ export function ProjectList({
             </CardHeader>
             <CardContent className="space-y-3">
               {project.description && (
-                <p className="text-sm text-[#6B6560] line-clamp-2">
+                <p className="text-sm text-muted-foreground line-clamp-2">
                   {project.description}
                 </p>
               )}
 
-              <div className="flex items-center gap-4 text-sm text-[#6B6560]">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <CheckSquare className="h-4 w-4" />
                   <span>{project._count.tasks} tasks</span>
@@ -346,17 +346,17 @@ export function ProjectList({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-[#E8E4DE]">
+              <div className="flex items-center justify-between pt-2 border-t border-border">
                 <Link 
                   href={`/${orgSlug}/tasks?project=${project.id}`}
-                  className="text-sm text-[#2D9AA5] hover:underline"
+                  className="text-sm text-primary hover:underline"
                 >
                   View Tasks →
                 </Link>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-red-500 hover:text-red-600"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
                   onClick={() => handleDelete(project.id)}
                 >
                   <Trash2 className="h-4 w-4" />

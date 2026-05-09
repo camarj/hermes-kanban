@@ -18,17 +18,17 @@ export function ChatMessageList({ messages, isGatewayDown, containerRef }: ChatM
     >
       {messages.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full text-center px-8">
-          <div className="w-16 h-16 rounded-2xl bg-[#E8E4DE] flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
             {isGatewayDown ? (
-              <WifiOff className="h-8 w-8 text-[#9A9590]" />
+              <WifiOff className="h-8 w-8 text-muted-foreground" />
             ) : (
-              <Bot className="h-8 w-8 text-[#2D9AA5]" />
+              <Bot className="h-8 w-8 text-primary" />
             )}
           </div>
-          <h2 className="font-serif text-xl font-semibold text-[#070605] mb-2">
+          <h2 className="font-serif text-xl font-semibold text-foreground mb-2">
             {isGatewayDown ? "Gateway Offline" : "Chat with CEO Agent"}
           </h2>
-          <p className="text-sm text-[#6B6560] max-w-md">
+          <p className="text-sm text-muted-foreground max-w-md">
             {isGatewayDown
               ? "The Hermes Gateway is not responding. Start it with hermes gateway run and try again."
               : "Send a message to the CEO agent. It will analyze your request and delegate tasks to worker agents as needed."}
@@ -44,7 +44,7 @@ export function ChatMessageList({ messages, isGatewayDown, containerRef }: ChatM
                 <button
                   key={suggestion}
                   data-suggestion={suggestion}
-                  className="text-left text-sm px-4 py-3 rounded-lg border border-[#D4CFC7] bg-white hover:bg-[#F5F1EB] hover:border-[#2D9AA5] transition-colors text-[#070605]"
+                  className="text-left text-sm px-4 py-3 rounded-lg border border-border bg-card hover:bg-background hover:border-primary transition-colors text-foreground"
                 >
                   {suggestion}
                 </button>

@@ -32,24 +32,24 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
       <div className="p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-serif text-3xl font-semibold text-[#070605]">
+            <h1 className="font-serif text-3xl font-semibold text-foreground">
               Agent Chat
             </h1>
-            <p className="text-[#6B6560]">
+            <p className="text-muted-foreground">
               Select an agent to start a conversation
             </p>
           </div>
         </div>
 
-        <Card className="border-[#D4CFC7]">
+        <Card className="border-border">
           <CardContent className="py-12 text-center">
-            <Bot className="mx-auto h-12 w-12 text-[#6B6560] mb-4" />
-            <h3 className="text-lg font-medium text-[#070605] mb-2">No agents available</h3>
-            <p className="text-sm text-[#6B6560] mb-4">
+            <Bot className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">No agents available</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Create a CEO agent first to start chatting.
             </p>
             <Button
-              className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+              className="bg-primary hover:bg-primary/90"
               onClick={() => { window.location.href = `/${orgSlug}/agents` }}
             >
               Go to Agents
@@ -65,10 +65,10 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
       <div className="p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-serif text-3xl font-semibold text-[#070605]">
+            <h1 className="font-serif text-3xl font-semibold text-foreground">
               Agent Chat
             </h1>
-            <p className="text-[#6B6560]">
+            <p className="text-muted-foreground">
               Select an agent to start a conversation
             </p>
           </div>
@@ -76,9 +76,9 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
 
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-[#070605]">Select agent:</label>
+            <label className="text-sm font-medium text-foreground">Select agent:</label>
             <Select value={selectedAgentId || ""} onValueChange={setSelectedAgentId}>
-              <SelectTrigger className="w-64 border-[#D4CFC7]">
+              <SelectTrigger className="w-64 border-border">
                 <SelectValue placeholder="Choose an agent..." />
               </SelectTrigger>
               <SelectContent>
@@ -90,7 +90,7 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
                       <span className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full" style={{ backgroundColor: roleConfig.color }} />
                         {agent.name}
-                        <span className="text-xs text-[#6B6560]">({roleConfig.label})</span>
+                        <span className="text-xs text-muted-foreground">({roleConfig.label})</span>
                       </span>
                     </SelectItem>
                   )
@@ -106,8 +106,8 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
               return (
                 <Card
                   key={agent.id}
-                  className={`border-[#D4CFC7] cursor-pointer hover:border-[#2D9AA5] hover:shadow-md transition-all ${
-                    selectedAgentId === agent.id ? "border-[#2D9AA5] ring-2 ring-[#2D9AA5]/20" : ""
+                  className={`border-border cursor-pointer hover:border-primary transition-all ${
+                    selectedAgentId === agent.id ? "border-primary ring-2 ring-primary/20" : ""
                   }`}
                   onClick={() => setSelectedAgentId(agent.id)}
                 >
@@ -120,8 +120,8 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
                         <Bot className="h-5 w-5" style={{ color: roleConfig.color }} />
                       </div>
                       <div>
-                        <h3 className="font-medium text-[#070605]">{agent.name}</h3>
-                        <p className="text-xs text-[#6B6560]">{agent.hermesProfile}</p>
+                        <h3 className="font-medium text-foreground">{agent.name}</h3>
+                        <p className="text-xs text-muted-foreground">{agent.hermesProfile}</p>
                       </div>
                     </div>
                     <Badge
@@ -131,7 +131,7 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
                       {roleConfig.label}
                     </Badge>
                     {agent.description && (
-                      <p className="text-sm text-[#6B6560] mt-2 line-clamp-2">{agent.description}</p>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{agent.description}</p>
                     )}
                   </CardContent>
                 </Card>
@@ -142,7 +142,7 @@ export function ChatPageClient({ orgId, orgSlug, initialAgents }: ChatPageClient
           {selectedAgentId && (
             <div className="flex justify-end">
               <Button
-                className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                className="bg-primary hover:bg-primary/90"
                 onClick={() => {}}
               >
                 <MessageSquare className="mr-2 h-4 w-4" />

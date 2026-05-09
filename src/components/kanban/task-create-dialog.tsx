@@ -90,11 +90,11 @@ export function TaskCreateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-white">
+      <DialogContent className="sm:max-w-[600px] bg-card">
         <form onSubmit={handleCreate}>
           <DialogHeader>
             <DialogTitle className="font-serif">Create New Task</DialogTitle>
-            <DialogDescription className="text-[#6B6560]">
+            <DialogDescription className="text-muted-foreground">
               Add a task to your Kanban board
             </DialogDescription>
           </DialogHeader>
@@ -108,7 +108,7 @@ export function TaskCreateDialog({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What needs to be done?"
                 required
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -120,7 +120,7 @@ export function TaskCreateDialog({
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Add details, context, or instructions..."
                 rows={4}
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -128,7 +128,7 @@ export function TaskCreateDialog({
               <div className="space-y-2">
                 <Label>Initial Status</Label>
                 <Select value={status} onValueChange={(v) => v && setStatus(v as TaskStatus)}>
-                  <SelectTrigger className="border-[#D4CFC7]">
+                  <SelectTrigger className="border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -144,7 +144,7 @@ export function TaskCreateDialog({
               <div className="space-y-2">
                 <Label>Priority</Label>
                 <Select value={priority} onValueChange={(v) => v && setPriority(v)}>
-                  <SelectTrigger className="border-[#D4CFC7]">
+                  <SelectTrigger className="border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -160,7 +160,7 @@ export function TaskCreateDialog({
               <div className="space-y-2">
                 <Label>Assign to Agent</Label>
                 <Select value={assignee || ""} onValueChange={(v) => v !== null && setAssignee(v)}>
-                  <SelectTrigger className="border-[#D4CFC7]">
+                  <SelectTrigger className="border-border">
                     <SelectValue placeholder="Unassigned" />
                   </SelectTrigger>
                   <SelectContent>
@@ -183,7 +183,7 @@ export function TaskCreateDialog({
                 resetForm()
                 onOpenChange(false)
               }}
-              className="border-[#D4CFC7]"
+              className="border-border"
             >
               <X className="mr-2 h-4 w-4" />
               Cancel
@@ -191,7 +191,7 @@ export function TaskCreateDialog({
             <Button
               type="submit"
               disabled={isLoading || !title.trim()}
-              className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+              className="bg-primary hover:bg-primary/90"
             >
               <Plus className="mr-2 h-4 w-4" />
               {isLoading ? "Creating..." : "Create Task"}

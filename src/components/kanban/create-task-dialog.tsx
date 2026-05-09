@@ -84,17 +84,17 @@ export function CreateTaskDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button className="bg-[#2D9AA5] hover:bg-[#1A7A82]">
+          <Button className="bg-primary hover:bg-primary/90">
             <Plus className="mr-2 h-4 w-4" />
             New Task
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[500px] bg-white">
+      <DialogContent className="sm:max-w-[500px] bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="font-serif">Create New Task</DialogTitle>
-            <DialogDescription className="text-[#6B6560]">
+            <DialogDescription className="text-muted-foreground">
               Add a new task to your board
             </DialogDescription>
           </DialogHeader>
@@ -108,7 +108,7 @@ export function CreateTaskDialog({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter task title"
                 required
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -120,7 +120,7 @@ export function CreateTaskDialog({
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Add details about this task..."
                 rows={3}
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -128,7 +128,7 @@ export function CreateTaskDialog({
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
                 <Select value={status} onValueChange={(v) => setStatus(v as TaskStatus)}>
-                  <SelectTrigger className="border-[#D4CFC7]">
+                  <SelectTrigger className="border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -144,7 +144,7 @@ export function CreateTaskDialog({
               <div className="space-y-2">
                 <Label htmlFor="priority">Priority</Label>
                 <Select value={priority} onValueChange={(v) => v && setPriority(v)}>
-                  <SelectTrigger className="border-[#D4CFC7]">
+                  <SelectTrigger className="border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,14 +163,14 @@ export function CreateTaskDialog({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="border-[#D4CFC7]"
+              className="border-border"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isLoading || !title.trim()}
-              className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+              className="bg-primary hover:bg-primary/90"
             >
               {isLoading ? "Creating..." : "Create Task"}
             </Button>

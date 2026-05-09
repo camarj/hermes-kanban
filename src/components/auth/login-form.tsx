@@ -62,17 +62,17 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="border-[#D4CFC7] bg-white">
+    <Card className="border-border bg-card">
       <CardHeader>
         <CardTitle className="font-serif text-2xl">Sign In</CardTitle>
-        <CardDescription className="text-[#6B6560]">
+        <CardDescription className="text-muted-foreground">
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button 
           variant="outline" 
-          className="w-full border-[#D4CFC7] hover:bg-[#E8E4DE]"
+          className="w-full border-border hover:bg-muted"
           onClick={signInWithGoogle}
           disabled={isLoading}
         >
@@ -99,16 +99,16 @@ export function LoginForm() {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-[#D4CFC7]" />
+            <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-[#6B6560]">Or continue with</span>
+            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
           </div>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#070605]">Email</Label>
+            <Label htmlFor="email" className="text-foreground">Email</Label>
             <Input
               id="email"
               type="email"
@@ -116,28 +116,28 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+              className="border-border focus:border-primary focus:ring-primary"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#070605]">Password</Label>
+            <Label htmlFor="password" className="text-foreground">Password</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+              className="border-border focus:border-primary focus:ring-primary"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-destructive">{error}</p>
           )}
 
           <Button 
             type="submit" 
-            className="w-full bg-[#2D9AA5] hover:bg-[#1A7A82]"
+            className="w-full bg-primary hover:bg-primary/90"
             disabled={isLoading}
           >
             {isLoading ? "Signing in..." : "Sign In"}
@@ -145,9 +145,9 @@ export function LoginForm() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <p className="text-sm text-[#6B6560]">
+        <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link href="/register" className="text-[#2D9AA5] hover:underline">
+          <Link href="/register" className="text-primary hover:underline">
             Sign up
           </Link>
         </p>

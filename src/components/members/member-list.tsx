@@ -64,8 +64,8 @@ const ROLE_ICONS = {
 
 const ROLE_COLORS = {
   owner: "bg-purple-100 text-purple-700",
-  board: "bg-blue-100 text-blue-700",
-  member: "bg-gray-100 text-gray-600"
+  board: "bg-info/10 text-info",
+  member: "bg-muted text-muted-foreground"
 }
 
 const ROLE_LABELS = {
@@ -197,7 +197,7 @@ export function MemberList({
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-sm text-[#6B6560]">
+          <p className="text-sm text-muted-foreground">
             {members.length} member{members.length !== 1 ? "s" : ""}
             {invitations.length > 0 && ` • ${invitations.length} pending invitation${invitations.length !== 1 ? "s" : ""}`}
           </p>
@@ -206,16 +206,16 @@ export function MemberList({
           <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
             <Button
               onClick={() => setIsInviteOpen(true)}
-              className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+              className="bg-primary hover:bg-primary/90"
             >
               <UserPlus className="mr-2 h-4 w-4" />
               Invite Member
             </Button>
-            <DialogContent className="bg-white">
+            <DialogContent className="bg-card">
               <form onSubmit={handleInvite}>
                 <DialogHeader>
                   <DialogTitle className="font-serif">Invite Member</DialogTitle>
-                  <DialogDescription className="text-[#6B6560]">
+                  <DialogDescription className="text-muted-foreground">
                     Send an invitation to join your organization
                   </DialogDescription>
                 </DialogHeader>
@@ -229,13 +229,13 @@ export function MemberList({
                       onChange={(e) => setInviteEmail(e.target.value)}
                       placeholder="colleague@company.com"
                       required
-                      className="border-[#D4CFC7] focus:border-[#2D9AA5]"
+                      className="border-border focus:border-primary"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="invite-role">Role</Label>
                     <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as "board" | "member")}>
-                      <SelectTrigger className="border-[#D4CFC7]">
+                      <SelectTrigger className="border-border">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -250,14 +250,14 @@ export function MemberList({
                     type="button"
                     variant="outline"
                     onClick={() => setIsInviteOpen(false)}
-                    className="border-[#D4CFC7]"
+                    className="border-border"
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
                     disabled={isLoading || !inviteEmail.includes("@")}
-                    className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                    className="bg-primary hover:bg-primary/90"
                   >
                     {isLoading ? "Sending..." : "Send Invitation"}
                   </Button>
@@ -273,11 +273,11 @@ export function MemberList({
         {members.map((member) => {
           const RoleIcon = ROLE_ICONS[member.role]
           return (
-            <Card key={member.id} className="border-[#D4CFC7]">
+            <Card key={member.id} className="border-border">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#E8E4DE] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       {member.user.image ? (
                         <img
                           src={member.user.image}
@@ -285,16 +285,16 @@ export function MemberList({
                           className="w-10 h-10 rounded-full"
                         />
                       ) : (
-                        <span className="text-sm font-medium text-[#070605]">
+                        <span className="text-sm font-medium text-foreground">
                           {(member.user.name || member.user.email).charAt(0).toUpperCase()}
                         </span>
                       )}
                     </div>
                     <div>
-                      <p className="font-medium text-[#070605]">
+                      <p className="font-medium text-foreground">
                         {member.user.name || member.user.email}
                       </p>
-                      <p className="text-sm text-[#6B6560]">{member.user.email}</p>
+                      <p className="text-sm text-muted-foreground">{member.user.email}</p>
                     </div>
                   </div>
 
@@ -310,7 +310,7 @@ export function MemberList({
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingMember(member)}
-                          className="text-[#6B6560]"
+                          className="text-muted-foreground"
                         >
                           Edit
                         </Button>
@@ -318,7 +318,7 @@ export function MemberList({
                           variant="ghost"
                           size="sm"
                           onClick={() => handleRemoveMember(member.id)}
-                          className="text-red-500"
+                          className="text-destructive"
                         >
                           Remove
                         </Button>
@@ -345,18 +345,18 @@ export function MemberList({
       {/* Pending Invitations */}
       {invitations.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-medium text-[#070605]">Pending Invitations</h3>
+          <h3 className="font-medium text-foreground">Pending Invitations</h3>
           {invitations.map((invitation) => (
-            <Card key={invitation.id} className="border-[#D4CFC7] border-dashed">
+            <Card key={invitation.id} className="border-border border-dashed">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#F5F1EB] flex items-center justify-center">
-                      <Mail className="h-5 w-5 text-[#6B6560]" />
+                    <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="font-medium text-[#070605]">{invitation.email}</p>
-                      <p className="text-sm text-[#6B6560]">
+                      <p className="font-medium text-foreground">{invitation.email}</p>
+                      <p className="text-sm text-muted-foreground">
                         Invited as {ROLE_LABELS[invitation.role as keyof typeof ROLE_LABELS]}
                       </p>
                     </div>
@@ -367,7 +367,7 @@ export function MemberList({
                       variant="ghost"
                       size="sm"
                       onClick={() => handleRevokeInvitation(invitation.id)}
-                      className="text-red-500"
+                      className="text-destructive"
                     >
                       Revoke
                     </Button>
@@ -382,19 +382,19 @@ export function MemberList({
       {/* Edit Role Dialog */}
       {editingMember && (
         <Dialog open={!!editingMember} onOpenChange={() => setEditingMember(null)}>
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-card">
             <DialogHeader>
               <DialogTitle className="font-serif">Edit Member Role</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <p className="text-sm text-[#6B6560]">
+              <p className="text-sm text-muted-foreground">
                 Update role for {editingMember.user.name || editingMember.user.email || "Unknown"}
               </p>
               <Select
                 value={editingMember.role}
                 onValueChange={(role) => role && handleUpdateRole(editingMember, role)}
               >
-                <SelectTrigger className="border-[#D4CFC7]">
+                <SelectTrigger className="border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -407,7 +407,7 @@ export function MemberList({
               <Button
                 variant="outline"
                 onClick={() => setEditingMember(null)}
-                className="border-[#D4CFC7]"
+                className="border-border"
               >
                 Cancel
               </Button>

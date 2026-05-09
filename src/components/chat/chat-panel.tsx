@@ -59,23 +59,23 @@ export function ChatPanel({ orgId, profile, agentName, onBack }: ChatPanelProps)
   // We'll pass it via a ref or context, but simpler: just use the chat from the input
 
   return (
-    <div className="flex flex-col h-full bg-[#F5F1EB]">
+    <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#D4CFC7] bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card">
         <div className="flex items-center gap-3">
           {onBack && (
             <Button variant="ghost" size="icon" onClick={onBack} className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <div className="w-9 h-9 rounded-lg bg-[#2D9AA5] flex items-center justify-center">
-            <span className="text-white font-serif font-semibold text-sm">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground font-serif font-semibold text-sm">
               {agentName.charAt(0).toUpperCase()}
             </span>
           </div>
           <div>
-            <h2 className="font-medium text-[#070605] text-sm">{agentName}</h2>
-            <p className="text-xs text-[#6B6560]">{profile}</p>
+            <h2 className="font-medium text-foreground text-sm">{agentName}</h2>
+            <p className="text-xs text-muted-foreground">{profile}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -83,10 +83,10 @@ export function ChatPanel({ orgId, profile, agentName, onBack }: ChatPanelProps)
             variant="outline"
             className={
               gatewayOnline
-                ? "border-green-300 text-green-700 bg-green-50"
+                ? "border-success/30 text-success bg-success/10"
                 : gatewayOnline === false
-                  ? "border-red-300 text-red-700 bg-red-50"
-                  : "border-gray-300 text-gray-500 bg-gray-50"
+                  ? "border-destructive/30 text-destructive bg-destructive/10"
+                  : "border-border text-muted-foreground bg-muted"
             }
           >
             {gatewayOnline ? (
@@ -102,7 +102,7 @@ export function ChatPanel({ orgId, profile, agentName, onBack }: ChatPanelProps)
             )}
           </Badge>
           {messages.length > 0 && (
-            <Button variant="ghost" size="icon" onClick={clearChat} className="h-8 w-8 text-[#6B6560]">
+            <Button variant="ghost" size="icon" onClick={clearChat} className="h-8 w-8 text-muted-foreground">
               <Trash2 className="h-4 w-4" />
             </Button>
           )}

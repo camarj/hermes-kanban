@@ -37,14 +37,14 @@ export function GlobalChatPanel({ orgId }: GlobalChatPanelProps) {
   return (
     <>
       {isOpen && (
-        <div className="w-96 flex-shrink-0 relative border-l border-[#D4CFC7] bg-white">
+        <div className="w-96 flex-shrink-0 relative border-l border-border bg-card">
           <Button
             onClick={() => setIsOpen(false)}
             variant="ghost"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-16 w-6 bg-white border border-[#D4CFC7] rounded-l-md rounded-r-none shadow-sm hover:bg-[#F5F1EB]"
+            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-16 w-6 bg-card border border-border rounded-l-md rounded-r-none hover:bg-background"
           >
-            <ChevronRight className="h-4 w-4 text-[#6B6560]" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </Button>
           <SharedChatPanel orgId={orgId} agents={agents} />
         </div>
@@ -54,10 +54,10 @@ export function GlobalChatPanel({ orgId }: GlobalChatPanelProps) {
         <Button
           onClick={() => setIsOpen(true)}
           variant="outline"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-16 w-6 bg-white border border-[#D4CFC7] rounded-l-md rounded-r-none shadow-sm hover:bg-[#F5F1EB] flex-col gap-1 px-0"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-16 w-6 bg-card border border-border rounded-l-md rounded-r-none hover:bg-background flex-col gap-1 px-0"
         >
-          <ChevronLeft className="h-4 w-4 text-[#6B6560]" />
-          <MessageSquare className="h-3 w-3 text-[#6B6560]" />
+          <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+          <MessageSquare className="h-3 w-3 text-muted-foreground" />
         </Button>
       )}
     </>

@@ -24,10 +24,10 @@ import { COLUMNS, PRIORITY_LABELS, type Task, type TaskStatus } from "@/lib/kanb
 import type { Agent } from "@/lib/agents/types"
 
 const priorityColors: Record<number, string> = {
-  2: "bg-red-100 text-red-700",
-  1: "bg-yellow-100 text-yellow-700",
-  0: "bg-gray-100 text-gray-700",
-  [-1]: "bg-gray-50 text-gray-600",
+  2: "bg-destructive/10 text-destructive",
+  1: "bg-warning/10 text-warning",
+  0: "bg-muted text-muted-foreground",
+  [-1]: "bg-muted text-muted-foreground",
 }
 
 interface KanbanBoardProps {
@@ -112,8 +112,8 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center bg-[#F5F1EB]">
-        <div className="text-[#6B6560]">Loading tasks...</div>
+      <div className="h-full flex items-center justify-center bg-background">
+        <div className="text-muted-foreground">Loading tasks...</div>
       </div>
     )
   }
@@ -126,22 +126,22 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
       onDragEnd={handleDragEnd}
     >
       <div className="h-full flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#D4CFC7] bg-white">
-          <h2 className="font-serif text-xl font-semibold text-[#070605]">Kanban Board</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card">
+          <h2 className="font-serif text-xl font-semibold text-foreground">Kanban Board</h2>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={handleSync}
               disabled={isSyncing}
-              className="border-[#D4CFC7] text-[#6B6560]"
+              className="border-border text-muted-foreground"
             >
               <RefreshCw className={`h-4 w-4 mr-1 ${isSyncing ? "animate-spin" : ""}`} />
               Sync
             </Button>
             <Button
               size="sm"
-              className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+              className="bg-primary hover:bg-primary/90"
               onClick={() => setShowCreateDialog(true)}
             >
               <Plus className="h-4 w-4 mr-1" />
@@ -150,7 +150,7 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
           </div>
         </div>
 
-        <div className="flex-1 overflow-x-auto p-6 bg-[#F5F1EB]">
+        <div className="flex-1 overflow-x-auto p-6 bg-background">
           <div className="flex gap-4 h-full min-w-max">
             {COLUMNS.map((column) => (
               <KanbanColumn
@@ -168,16 +168,16 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
 
       <DragOverlay>
         {activeTask && (
-          <Card className="cursor-grabbing shadow-lg border-[#2D9AA5] border-2 opacity-90">
+          <Card className="cursor-grabbing border-primary border-2 opacity-90">
             <CardContent className="p-3">
-              <p className="text-sm font-medium text-[#070605] mb-2">{activeTask.title}</p>
+              <p className="text-sm font-medium text-foreground mb-2">{activeTask.title}</p>
               <div className="flex items-center justify-between">
                 <Badge className={`text-xs ${priorityColors[activeTask.priority] || priorityColors[0]}`}>
                   {PRIORITY_LABELS[activeTask.priority] || "Normal"}
                 </Badge>
                 {activeTask.assignee && (
-                  <div className="h-5 w-5 rounded-full bg-[#2D9AA5] flex items-center justify-center">
-                    <span className="text-[10px] text-white font-medium">
+                  <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                    <span className="text-[10px] text-primary-foreground font-medium">
                       {activeTask.assignee.charAt(0).toUpperCase()}
                     </span>
                   </div>

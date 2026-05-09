@@ -41,10 +41,10 @@ export default async function ProjectsPage({
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="font-serif text-3xl font-semibold text-[#070605]">
+        <h1 className="font-serif text-3xl font-semibold text-foreground">
           Projects
         </h1>
-        <p className="text-[#6B6560]">
+        <p className="text-muted-foreground">
           Manage your organization&apos;s projects and track progress
         </p>
       </div>

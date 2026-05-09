@@ -51,17 +51,17 @@ export function CreateOrganizationForm() {
   }
 
   return (
-    <Card className="border-[#D4CFC7] bg-white">
+    <Card className="border-border bg-card">
       <CardHeader>
         <CardTitle className="font-serif text-2xl">Create Your Organization</CardTitle>
-        <CardDescription className="text-[#6B6560]">
+        <CardDescription className="text-muted-foreground">
           Set up your first organization to get started with Hermes Kanban
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-[#070605]">
+            <Label htmlFor="name" className="text-foreground">
               Organization Name *
             </Label>
             <Input
@@ -72,12 +72,12 @@ export function CreateOrganizationForm() {
               onChange={(e) => setName(e.target.value)}
               required
               minLength={2}
-              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+              className="border-border focus:border-primary focus:ring-primary"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="objective" className="text-[#070605]">
+            <Label htmlFor="objective" className="text-foreground">
               Objective
             </Label>
             <Textarea
@@ -86,20 +86,20 @@ export function CreateOrganizationForm() {
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
               rows={5}
-              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5] resize-y min-h-[120px]"
+              className="border-border focus:border-primary focus:ring-primary resize-y min-h-[120px]"
             />
-            <p className="text-xs text-[#6B6560]">
+            <p className="text-xs text-muted-foreground">
               Describe your organization&apos;s purpose and goals — you can write multiple paragraphs
             </p>
           </div>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-destructive">{error}</p>
           )}
 
           <Button 
             type="submit" 
-            className="w-full bg-[#2D9AA5] hover:bg-[#1A7A82]"
+            className="w-full bg-primary hover:bg-primary/90"
             disabled={isLoading}
           >
             {isLoading ? "Creating..." : "Create Organization"}
@@ -107,7 +107,7 @@ export function CreateOrganizationForm() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <p className="text-xs text-[#6B6560]">
+        <p className="text-xs text-muted-foreground">
           You can always change this information later in settings
         </p>
       </CardFooter>

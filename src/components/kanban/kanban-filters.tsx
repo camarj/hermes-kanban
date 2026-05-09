@@ -47,25 +47,25 @@ export function KanbanFilters({ filters, onFiltersChange }: KanbanFiltersProps) 
       {/* Search Bar */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6B6560]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search tasks..."
             value={filters.search}
             onChange={(e) =>
               onFiltersChange({ ...filters, search: e.target.value })
             }
-            className="pl-9 border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+            className="pl-9 border-border focus:border-primary focus:ring-primary"
           />
         </div>
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className={`border-[#D4CFC7] ${hasActiveFilters ? "bg-[#2D9AA5]/10 border-[#2D9AA5]" : ""}`}
+          className={`border-border ${hasActiveFilters ? "bg-primary/10 border-primary" : ""}`}
         >
           <Filter className="mr-2 h-4 w-4" />
           Filters
           {hasActiveFilters && (
-            <span className="ml-2 bg-[#2D9AA5] text-white text-xs rounded-full px-1.5">
+            <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full px-1.5">
               !
             </span>
           )}
@@ -74,7 +74,7 @@ export function KanbanFilters({ filters, onFiltersChange }: KanbanFiltersProps) 
           <Button
             variant="ghost"
             onClick={clearFilters}
-            className="text-[#6B6560] hover:text-[#070605]"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -83,16 +83,16 @@ export function KanbanFilters({ filters, onFiltersChange }: KanbanFiltersProps) 
 
       {/* Filter Options */}
       {showFilters && (
-        <div className="flex flex-wrap gap-3 p-3 bg-white rounded-lg border border-[#D4CFC7]">
+        <div className="flex flex-wrap gap-3 p-3 bg-card rounded-lg border border-border">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#6B6560]">Status:</span>
+            <span className="text-sm text-muted-foreground">Status:</span>
             <Select
               value={filters.status}
               onValueChange={(v) => v &&
                 onFiltersChange({ ...filters, status: v as TaskFilters["status"] })
               }
             >
-              <SelectTrigger className="w-32 border-[#D4CFC7]">
+              <SelectTrigger className="w-32 border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -108,14 +108,14 @@ export function KanbanFilters({ filters, onFiltersChange }: KanbanFiltersProps) 
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#6B6560]">Priority:</span>
+            <span className="text-sm text-muted-foreground">Priority:</span>
             <Select
               value={filters.priority}
               onValueChange={(v) => v &&
                 onFiltersChange({ ...filters, priority: v })
               }
             >
-              <SelectTrigger className="w-32 border-[#D4CFC7]">
+              <SelectTrigger className="w-32 border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -129,14 +129,14 @@ export function KanbanFilters({ filters, onFiltersChange }: KanbanFiltersProps) 
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#6B6560]">Assignee:</span>
+            <span className="text-sm text-muted-foreground">Assignee:</span>
             <Input
               placeholder="Filter by assignee"
               value={filters.assignee}
               onChange={(e) =>
                 onFiltersChange({ ...filters, assignee: e.target.value })
               }
-              className="w-40 border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+              className="w-40 border-border focus:border-primary focus:ring-primary"
             />
           </div>
         </div>

@@ -68,10 +68,10 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
 
   if (agents.length === 0) {
     return (
-      <div className="text-center py-12 border border-dashed border-[#D4CFC7] rounded-lg">
-        <Bot className="mx-auto h-12 w-12 text-[#6B6560] mb-4" />
-        <h3 className="text-lg font-medium text-[#070605] mb-2">No agents yet</h3>
-        <p className="text-sm text-[#6B6560]">
+      <div className="text-center py-12 border border-dashed border-border rounded-lg">
+        <Bot className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-medium text-foreground mb-2">No agents yet</h3>
+        <p className="text-sm text-muted-foreground">
           Create your first AI agent to get started
         </p>
       </div>
@@ -89,7 +89,7 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
             key={agent.id}
             data-testid="agent-card"
             data-agent-id={agent.id}
-            className={`border-[#D4CFC7] hover:shadow-md transition-shadow ${
+            className={`border-border transition-colors ${
               !agent.isActive ? "opacity-60" : ""
             }`}
           >
@@ -106,18 +106,18 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                     />
                   </div>
                   <div>
-                    <CardTitle className="text-base font-medium text-[#070605]">
+                    <CardTitle className="text-base font-medium text-foreground">
                       {agent.name}
                     </CardTitle>
-                    <p className="text-xs text-[#6B6560]">{agent.hermesProfile}</p>
+                    <p className="text-xs text-muted-foreground">{agent.hermesProfile}</p>
                   </div>
                 </div>
                 <Badge
                   variant={agent.isActive ? "default" : "secondary"}
                   className={
                     agent.isActive
-                      ? "bg-green-100 text-green-700 hover:bg-green-100"
-                      : "bg-gray-100 text-gray-600"
+                      ? "bg-success/10 text-success hover:bg-success/10"
+                      : "bg-muted text-muted-foreground"
                   }
                 >
                   {agent.isActive ? "Active" : "Inactive"}
@@ -127,7 +127,7 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
 
             <CardContent className="space-y-3">
               {agent.description && (
-                <p className="text-sm text-[#6B6560] line-clamp-2">
+                <p className="text-sm text-muted-foreground line-clamp-2">
                   {agent.description}
                 </p>
               )}
@@ -144,7 +144,7 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                   {roleConfig.label}
                 </span>
                 {agent.template && (
-                  <span className="text-xs text-[#6B6560]">
+                  <span className="text-xs text-muted-foreground">
                     via {agent.template.name}
                   </span>
                 )}
@@ -157,7 +157,7 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                     <Badge
                       key={skill}
                       variant="secondary"
-                      className="text-xs bg-[#E8E4DE] text-[#070605]"
+                      className="text-xs bg-muted text-foreground"
                     >
                       {skill}
                     </Badge>
@@ -165,7 +165,7 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                   {agent.skills.length > 3 && (
                     <Badge
                       variant="secondary"
-                      className="text-xs bg-[#E8E4DE] text-[#6B6560]"
+                      className="text-xs bg-muted text-muted-foreground"
                     >
                       +{agent.skills.length - 3}
                     </Badge>
@@ -174,9 +174,9 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
               )}
 
               {/* Actions */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#E8E4DE]">
+              <div className="flex items-center justify-between pt-2 border-t border-border">
                 <div className="flex items-center gap-2">
-                  <Power className="h-4 w-4 text-[#6B6560]" />
+                  <Power className="h-4 w-4 text-muted-foreground" />
                   <Switch
                     checked={agent.isActive}
                     onCheckedChange={() => toggleAgentStatus(agent)}
@@ -187,14 +187,14 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-[#6B6560] hover:text-[#070605]"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
                   >
                     <Settings className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-red-500 hover:text-red-600"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
                     onClick={() => deleteAgent(agent)}
                   >
                     <Trash2 className="h-4 w-4" />

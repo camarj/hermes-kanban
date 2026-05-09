@@ -94,23 +94,23 @@ export function CollapsibleSidebar({
     <TooltipProvider delay={0}>
       <aside
         className={cn(
-          "border-r border-[#D4CFC7] bg-white flex flex-col transition-all duration-300 ease-in-out",
+          "border-r border-border bg-card flex flex-col transition-all duration-300 ease-in-out",
           collapsed ? "w-16" : "w-64"
         )}
       >
         <div className={cn(
-          "h-16 flex items-center border-b border-[#D4CFC7]",
+          "h-16 flex items-center border-b border-border",
           collapsed ? "justify-center px-2" : "px-4 justify-between"
         )}>
           {!collapsed && (
-            <Link href="/dashboard" className="font-serif text-xl font-semibold text-[#070605]">
+            <Link href="/dashboard" className="font-serif text-xl font-semibold text-foreground">
               Hermes Kanban
             </Link>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={cn(
-              "p-2 rounded-md text-[#6B6560] hover:bg-[#E8E4DE] hover:text-[#070605] transition-colors",
+              "p-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors",
             )}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -119,7 +119,7 @@ export function CollapsibleSidebar({
         </div>
 
         {!collapsed && (
-          <div className="p-3 border-b border-[#D4CFC7]">
+          <div className="p-3 border-b border-border">
             <OrganizationSwitcher
               organizations={organizations}
               currentOrg={currentOrg}
@@ -139,8 +139,8 @@ export function CollapsibleSidebar({
                     "flex items-center rounded-md text-sm transition-colors",
                     collapsed ? "justify-center px-2 py-2" : "gap-3 px-3 py-2",
                     isActive
-                      ? "bg-[#2D9AA5]/10 text-[#2D9AA5] font-medium"
-                      : "text-[#6B6560] hover:bg-[#E8E4DE] hover:text-[#070605]"
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   {item.icon}
@@ -163,22 +163,22 @@ export function CollapsibleSidebar({
         </nav>
 
         <div className={cn(
-          "border-t border-[#D4CFC7]",
+          "border-t border-border",
           collapsed ? "p-2" : "p-3"
         )}>
           {collapsed ? (
             <div className="flex flex-col items-center gap-2">
               <Tooltip>
                 <TooltipTrigger render={
-                  <div className="h-8 w-8 rounded-full bg-[#E8E4DE] flex items-center justify-center cursor-default">
-                    <span className="text-sm font-medium text-[#070605]">
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center cursor-default">
+                    <span className="text-sm font-medium text-foreground">
                       {userInitial}
                     </span>
                   </div>
                 } />
                 <TooltipContent side="right">
                   <div>{userName || userEmail}</div>
-                  <div className="text-xs text-[#6B6560] capitalize">{userRole}</div>
+                  <div className="text-xs text-muted-foreground capitalize">{userRole}</div>
                 </TooltipContent>
               </Tooltip>
               <div className="flex flex-col items-center gap-1">
@@ -189,16 +189,16 @@ export function CollapsibleSidebar({
           ) : (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="h-8 w-8 rounded-full bg-[#E8E4DE] flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-medium text-[#070605]">
+                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-medium text-foreground">
                     {userInitial}
                   </span>
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-medium text-[#070605] truncate">
+                  <span className="text-sm font-medium text-foreground truncate">
                     {userName || userEmail}
                   </span>
-                  <span className="text-xs text-[#6B6560] capitalize">
+                  <span className="text-xs text-muted-foreground capitalize">
                     {userRole}
                   </span>
                 </div>

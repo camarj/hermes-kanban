@@ -22,7 +22,7 @@ export function SignOutButton() {
     <Button
       variant="ghost"
       size="sm"
-      className="text-[#6B6560] hover:text-[#070605] flex-shrink-0"
+      className="text-muted-foreground hover:text-foreground flex-shrink-0"
       onClick={handleSignOut}
     >
       <LogOut className="h-4 w-4" />

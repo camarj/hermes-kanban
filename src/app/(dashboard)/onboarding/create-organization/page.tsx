@@ -20,13 +20,13 @@ export default async function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl font-semibold text-[#070605] mb-2">
+          <h1 className="font-serif text-3xl font-semibold text-foreground mb-2">
             Welcome to Hermes Kanban
           </h1>
-          <p className="text-[#6B6560]">
+          <p className="text-muted-foreground">
             Let&apos;s set up your first organization
           </p>
         </div>

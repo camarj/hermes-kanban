@@ -9,10 +9,10 @@ import { useDraggable } from "@dnd-kit/core"
 import { COLUMNS, PRIORITY_LABELS, type Task, type TaskStatus } from "@/lib/kanban/types"
 
 const priorityColors: Record<number, string> = {
-  2: "bg-red-100 text-red-700",
-  1: "bg-yellow-100 text-yellow-700",
-  0: "bg-gray-100 text-gray-700",
-  [-1]: "bg-gray-50 text-gray-600",
+  2: "bg-destructive/10 text-destructive",
+  1: "bg-warning/10 text-warning",
+  0: "bg-muted text-muted-foreground",
+  [-1]: "bg-muted text-muted-foreground",
 }
 
 interface KanbanColumnProps {
@@ -44,22 +44,22 @@ function TaskCard({ task, onTaskClick }: { task: Task; onTaskClick?: (task: Task
       onClick={() => onTaskClick?.(task)}
     >
       <Card 
-        className="cursor-grab hover:shadow-md transition-shadow border-[#D4CFC7] active:shadow-lg mb-2" 
+        className="cursor-grab transition-colors border-border mb-2" 
         data-testid="task-card"
         data-task-id={task.id}
       >
         <CardContent className="p-3">
-          <p className="text-sm font-medium text-[#070605] mb-2">{task.title}</p>
+          <p className="text-sm font-medium text-foreground mb-2">{task.title}</p>
           {task.body && (
-            <p className="text-xs text-[#6B6560] mb-2 line-clamp-2">{task.body}</p>
+            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{task.body}</p>
           )}
           <div className="flex items-center justify-between">
             <Badge className={`text-xs ${priorityColors[task.priority] || priorityColors[0]}`}>
               {PRIORITY_LABELS[task.priority] || "Normal"}
             </Badge>
             {task.assignee && (
-              <div className="h-5 w-5 rounded-full bg-[#2D9AA5] flex items-center justify-center">
-                <span className="text-[10px] text-white font-medium">
+              <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                <span className="text-[10px] text-primary-foreground font-medium">
                   {task.assignee.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -78,7 +78,7 @@ export function KanbanColumn({ id, title, color, tasks, onTaskClick }: KanbanCol
     <div className="w-72 flex flex-col" data-testid={`kanban-column-${id}`}>
       <div className="rounded-t-lg px-3 py-2 flex items-center justify-between" style={{ backgroundColor: color + "20" }}>
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-[#070605]">{title}</span>
+          <span className="font-medium text-sm text-foreground">{title}</span>
           <Badge variant="secondary" className="h-5 px-2 text-xs">
             {tasks.length}
           </Badge>
@@ -90,8 +90,8 @@ export function KanbanColumn({ id, title, color, tasks, onTaskClick }: KanbanCol
 
       <div
         ref={setNodeRef}
-        className={`flex-1 bg-white/50 rounded-b-lg p-2 border border-t-0 border-[#D4CFC7] min-h-[200px] ${
-          isOver ? "bg-[#2D9AA5]/10" : ""
+        className={`flex-1 bg-card/50 rounded-b-lg p-2 border border-t-0 border-border min-h-[200px] ${
+          isOver ? "bg-primary/10" : ""
         }`}
       >
         {tasks.map((task) => (
@@ -99,7 +99,7 @@ export function KanbanColumn({ id, title, color, tasks, onTaskClick }: KanbanCol
         ))}
 
         {tasks.length === 0 && (
-          <div className="text-center py-8 text-sm text-[#6B6560]">No tasks</div>
+          <div className="text-center py-8 text-sm text-muted-foreground">No tasks</div>
         )}
       </div>
     </div>

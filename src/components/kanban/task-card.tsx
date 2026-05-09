@@ -32,8 +32,8 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       style={style}
       onClick={onClick}
       className={cn(
-        "group relative bg-white rounded-lg border border-[#D4CFC7] p-3 shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-[#2D9AA5]",
-        isDragging && "opacity-50 rotate-2 shadow-lg border-[#2D9AA5]"
+        "group relative bg-card rounded-lg border border-border p-3 transition-all cursor-pointer hover:border-primary",
+        isDragging && "opacity-50 rotate-2 border-primary"
       )}
     >
       {/* Drag Handle */}
@@ -43,7 +43,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
         className="absolute left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing"
         onClick={(e) => e.stopPropagation()}
       >
-        <GripVertical className="h-4 w-4 text-[#6B6560]" />
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
 
       <div className="pl-5">
@@ -54,19 +54,19 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
             style={{ backgroundColor: PRIORITY_COLORS[task.priority] || PRIORITY_COLORS[0] }}
             title={PRIORITY_LABELS[task.priority]}
           />
-          <span className="text-xs text-[#6B6560]">
+          <span className="text-xs text-muted-foreground">
             {task.project.name}
           </span>
         </div>
 
         {/* Title */}
-        <h4 className="text-sm font-medium text-[#070605] mb-1 line-clamp-2">
+        <h4 className="text-sm font-medium text-foreground mb-1 line-clamp-2">
           {task.title}
         </h4>
 
         {/* Body Preview */}
         {task.body && (
-          <p className="text-xs text-[#6B6560] line-clamp-2 mb-2">
+          <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
             {task.body}
           </p>
         )}
@@ -75,21 +75,21 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
         <div className="flex items-center justify-between mt-2">
           {task.assignee ? (
             <div className="flex items-center gap-1">
-              <div className="w-5 h-5 rounded-full bg-[#2D9AA5] text-white text-xs flex items-center justify-center">
+              <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
                 {task.assignee.charAt(0).toUpperCase()}
               </div>
-              <span className="text-xs text-[#6B6560] truncate max-w-[100px]">{task.assignee}</span>
+              <span className="text-xs text-muted-foreground truncate max-w-[100px]">{task.assignee}</span>
             </div>
           ) : (
-            <span className="text-xs text-[#6B6560]">Unassigned</span>
+            <span className="text-xs text-muted-foreground">Unassigned</span>
           )}
 
           {task.status === "blocked" && isAgentRequestTask(task) ? (
-            <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full">
+            <span className="text-xs bg-warning/10 text-warning px-1.5 py-0.5 rounded-full">
               Hiring
             </span>
           ) : task.status === "blocked" ? (
-            <AlertCircle className="h-4 w-4 text-red-500" />
+            <AlertCircle className="h-4 w-4 text-destructive" />
           ) : null}
         </div>
       </div>

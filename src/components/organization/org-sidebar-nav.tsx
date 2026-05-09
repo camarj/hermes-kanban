@@ -63,8 +63,8 @@ export function OrgSidebarNav({ orgSlug }: OrgSidebarNavProps) {
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
               isActive
-                ? "bg-[#2D9AA5]/10 text-[#2D9AA5] font-medium"
-                : "text-[#6B6560] hover:bg-[#E8E4DE] hover:text-[#070605]"
+                ? "bg-primary/10 text-primary font-medium"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
             {item.icon}

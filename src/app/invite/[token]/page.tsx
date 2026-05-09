@@ -55,11 +55,11 @@ export default function AcceptInvitationPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB]">
-        <Card className="w-full max-w-md border-[#D4CFC7]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md border-border">
           <CardContent className="p-8 text-center">
-            <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#2D9AA5]" />
-            <p className="mt-4 text-[#6B6560]">Verifying invitation...</p>
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+            <p className="mt-4 text-muted-foreground">Verifying invitation...</p>
           </CardContent>
         </Card>
       </div>
@@ -68,17 +68,17 @@ export default function AcceptInvitationPage() {
 
   if (status === "accepted") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB]">
-        <Card className="w-full max-w-md border-[#D4CFC7]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md border-border">
           <CardContent className="p-8 text-center">
             <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
-            <h2 className="mt-4 font-serif text-xl font-semibold text-[#070605]">
+            <h2 className="mt-4 font-serif text-xl font-semibold text-foreground">
               Invitation Accepted!
             </h2>
-            <p className="mt-2 text-[#6B6560]">
+            <p className="mt-2 text-muted-foreground">
               You are now a member of {organizationName}
             </p>
-            <p className="mt-4 text-sm text-[#6B6560]">
+            <p className="mt-4 text-sm text-muted-foreground">
               Redirecting to organization...
             </p>
           </CardContent>
@@ -89,16 +89,16 @@ export default function AcceptInvitationPage() {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB]">
-        <Card className="w-full max-w-md border-[#D4CFC7]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md border-border">
           <CardContent className="p-8 text-center">
             <XCircle className="mx-auto h-12 w-12 text-red-500" />
-            <h2 className="mt-4 font-serif text-xl font-semibold text-[#070605]">
+            <h2 className="mt-4 font-serif text-xl font-semibold text-foreground">
               Invitation Error
             </h2>
-            <p className="mt-2 text-[#6B6560]">{error}</p>
+            <p className="mt-2 text-muted-foreground">{error}</p>
             <Link href="/dashboard">
-              <Button className="mt-6 bg-[#2D9AA5] hover:bg-[#1A7A82]">
+              <Button className="mt-6 bg-primary hover:bg-primary/90">
                 Go to Dashboard
               </Button>
             </Link>
@@ -109,25 +109,25 @@ export default function AcceptInvitationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB] px-4">
-      <Card className="w-full max-w-md border-[#D4CFC7]">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md border-border">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-full bg-[#2D9AA5]/10 flex items-center justify-center mb-4">
-            <Mail className="h-6 w-6 text-[#2D9AA5]" />
+          <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+            <Mail className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="font-serif text-2xl">Organization Invitation</CardTitle>
-          <CardDescription className="text-[#6B6560]">
+          <CardDescription className="text-muted-foreground">
             You&apos;ve been invited to join an organization
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-[#6B6560] text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Click below to accept the invitation and become a member of this organization.
           </p>
           <Button
             onClick={handleAccept}
             disabled={isAccepting}
-            className="w-full bg-[#2D9AA5] hover:bg-[#1A7A82]"
+            className="w-full bg-primary hover:bg-primary/90"
           >
             {isAccepting ? (
               <>
@@ -140,7 +140,7 @@ export default function AcceptInvitationPage() {
           </Button>
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium border border-[#D4CFC7] rounded-md hover:bg-[#E8E4DE] text-[#070605]"
+            className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium border border-border rounded-md hover:bg-muted text-foreground"
           >
             Decline
           </Link>

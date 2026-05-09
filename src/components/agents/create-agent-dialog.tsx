@@ -196,14 +196,14 @@ export function CreateAgentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-white max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] bg-card max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="font-serif flex items-center gap-2">
-              <Bot className="h-5 w-5 text-[#2D9AA5]" />
+              <Bot className="h-5 w-5 text-primary" />
               Create New Agent
             </DialogTitle>
-            <DialogDescription className="text-[#6B6560]">
+            <DialogDescription className="text-muted-foreground">
               {step === "level"
                 ? "Choose the level in the organization"
                 : step === "role"
@@ -213,9 +213,9 @@ export function CreateAgentDialog({
           </DialogHeader>
 
           {error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mt-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
 
@@ -234,7 +234,7 @@ export function CreateAgentDialog({
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
                         roleType === level
                           ? `border-[${info.color}] bg-[${info.color}]/5`
-                          : "border-[#D4CFC7] hover:border-[#2D9AA5]/50"
+                          : "border-border hover:border-primary/50"
                       } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <div className="flex items-center gap-3">
@@ -244,12 +244,12 @@ export function CreateAgentDialog({
                            <Zap className="h-5 w-5" style={{ color: info.color }} />}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-[#070605]">{info.label}</h3>
-                          <p className="text-sm text-[#6B6560] mt-0.5">{info.description}</p>
+                          <h3 className="font-semibold text-foreground">{info.label}</h3>
+                          <p className="text-sm text-muted-foreground mt-0.5">{info.description}</p>
                         </div>
                       </div>
                       {level === "ceo" && hasCeoAgent && (
-                        <p className="text-xs text-[#9B9590] mt-2 ml-10">Already exists in this organization</p>
+                        <p className="text-xs text-muted-foreground mt-2 ml-10">Already exists in this organization</p>
                       )}
                     </button>
                   )
@@ -262,7 +262,7 @@ export function CreateAgentDialog({
                   id="create-hermes-level"
                   checked={createHermesProfile}
                   onChange={(e) => setCreateHermesProfile(e.target.checked)}
-                  className="h-4 w-4 rounded border-[#D4CFC7] text-[#2D9AA5] focus:ring-[#2D9AA5]"
+                  className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
                 />
                 <Label htmlFor="create-hermes-level" className="text-sm font-normal">
                   Create Hermes Gateway profile automatically
@@ -283,14 +283,14 @@ export function CreateAgentDialog({
                     className={`p-4 rounded-lg border-2 text-left transition-all ${
                       cLevelRole === role
                         ? "border-[#3B82F6] bg-[#3B82F6]/5"
-                        : "border-[#D4CFC7] hover:border-[#3B82F6]/50"
+                        : "border-border hover:border-[#3B82F6]/50"
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {C_LEVEL_ICONS[role]}
-                      <h4 className="font-semibold text-[#070605]">{info.label}</h4>
+                      <h4 className="font-semibold text-foreground">{info.label}</h4>
                     </div>
-                    <p className="text-xs text-[#6B6560]">{info.description}</p>
+                    <p className="text-xs text-muted-foreground">{info.description}</p>
                   </button>
                 ))}
               </div>
@@ -302,7 +302,7 @@ export function CreateAgentDialog({
               <Label className="text-base font-medium">Select Specialization</Label>
               {workersByDepartment.map((group) => (
                 <div key={group.department} className="space-y-2">
-                  <p className="text-xs font-medium text-[#9B9590] uppercase tracking-wide">{group.label}</p>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{group.label}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {group.specializations.map(([key, info]) => (
                       <button
@@ -312,7 +312,7 @@ export function CreateAgentDialog({
                         className={`p-3 rounded-lg border-2 flex items-center gap-2 transition-all text-left ${
                           specialization === key
                             ? "border-[#6B6560] bg-[#6B6560]/5"
-                            : "border-[#D4CFC7] hover:border-[#6B6560]/50"
+                            : "border-border hover:border-[#6B6560]/50"
                         }`}
                       >
                         {WORKER_ICONS[key as WorkerSpecialization]}
@@ -340,7 +340,7 @@ export function CreateAgentDialog({
                   }
                   disabled={roleType === "ceo"}
                   required
-                  className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                  className="border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
@@ -352,7 +352,7 @@ export function CreateAgentDialog({
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What does this agent do?"
                   rows={2}
-                  className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                  className="border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
@@ -366,9 +366,9 @@ export function CreateAgentDialog({
                       onChange={(e) => setSoulContent(e.target.value)}
                       placeholder="Override default behavior with custom instructions..."
                       rows={4}
-                      className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5] font-mono text-sm"
+                      className="border-border focus:border-primary focus:ring-primary font-mono text-sm"
                     />
-                    <p className="text-xs text-[#6B6560]">
+                    <p className="text-xs text-muted-foreground">
                       Default instructions will be generated based on specialization
                     </p>
                   </div>
@@ -380,7 +380,7 @@ export function CreateAgentDialog({
                         value={newSkill}
                         onChange={(e) => setNewSkill(e.target.value)}
                         placeholder="Add a skill"
-                        className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                        className="border-border focus:border-primary focus:ring-primary"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault()
@@ -392,7 +392,7 @@ export function CreateAgentDialog({
                         type="button"
                         variant="outline"
                         onClick={addSkill}
-                        className="border-[#D4CFC7]"
+                        className="border-border"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -403,7 +403,7 @@ export function CreateAgentDialog({
                           <Badge
                             key={skill}
                             variant="secondary"
-                            className="bg-[#E8E4DE] text-[#070605] hover:bg-[#D4CFC7] cursor-pointer"
+                            className="bg-muted text-foreground hover:bg-[#D4CFC7] cursor-pointer"
                             onClick={() => removeSkill(skill)}
                           >
                             {skill}
@@ -417,18 +417,18 @@ export function CreateAgentDialog({
               )}
 
               {roleType !== "worker" && (
-                <div className="p-4 bg-[#F5F1EB] rounded-lg">
-                  <h4 className="text-sm font-medium text-[#070605] mb-2">
+                <div className="p-4 bg-background rounded-lg">
+                  <h4 className="text-sm font-medium text-foreground mb-2">
                     {roleType === "ceo" ? "CEO" : C_LEVEL_ROLES[cLevelRole]?.label} Configuration
                   </h4>
-                  <p className="text-xs text-[#6B6560]">
+                  <p className="text-xs text-muted-foreground">
                     {roleType === "ceo"
                       ? "Orchestrates the entire organization. Delegates to C-level, never executes directly."
                       : `Orchestrates the ${C_LEVEL_ROLES[cLevelRole]?.department || ""} department. Delegates to specialists.`}
                     {orgObjective && ` Understands your objective: "${orgObjective}"`}
                   </p>
                   {createHermesProfile && (
-                    <div className="mt-3 flex items-center gap-2 text-xs text-green-600">
+                    <div className="mt-3 flex items-center gap-2 text-xs text-success">
                       <CheckCircle2 className="h-3 w-3" />
                       Profile will be created with orchestration capabilities
                     </div>
@@ -436,10 +436,10 @@ export function CreateAgentDialog({
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-sm text-[#6B6560] pt-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
                 <Bot className="h-4 w-4" />
                 <span>
-                  Profile name: <code className="bg-[#F5F1EB] px-1.5 py-0.5 rounded text-xs">
+                  Profile name: <code className="bg-background px-1.5 py-0.5 rounded text-xs">
                     {getProfilePreview()}
                   </code>
                 </span>
@@ -456,7 +456,7 @@ export function CreateAgentDialog({
                   if (step === "details") setStep(roleType === "ceo" ? "level" : "role")
                   else setStep("level")
                 }}
-                className="border-[#D4CFC7]"
+                className="border-border"
               >
                 Back
               </Button>
@@ -466,7 +466,7 @@ export function CreateAgentDialog({
               type="button"
               variant="outline"
               onClick={() => { resetForm(); onOpenChange(false) }}
-              className="border-[#D4CFC7]"
+              className="border-border"
             >
               Cancel
             </Button>
@@ -475,7 +475,7 @@ export function CreateAgentDialog({
                 type="button"
                 onClick={step === "level" ? handleLevelNext : handleRoleNext}
                 disabled={roleType === "ceo" && hasCeoAgent}
-                className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                className="bg-primary hover:bg-primary/90"
               >
                 Next
               </Button>
@@ -483,7 +483,7 @@ export function CreateAgentDialog({
               <Button
                 type="submit"
                 disabled={isLoading || !name.trim()}
-                className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                className="bg-primary hover:bg-primary/90"
               >
                 {isLoading ? "Creating..." : "Create Agent"}
               </Button>

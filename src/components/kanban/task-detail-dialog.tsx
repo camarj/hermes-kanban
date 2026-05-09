@@ -168,21 +168,21 @@ export function TaskDetailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[600px] bg-white max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] bg-card max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleSave}>
             <DialogHeader>
               <DialogTitle className="font-serif flex items-center gap-2">
                 Edit Task
                 {task.status === "blocked" && isAgentRequestTask(task) && (
-                  <span className="text-xs font-normal bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-normal bg-warning/10 text-warning px-2 py-0.5 rounded-full">
                     Hiring Request
                   </span>
                 )}
                 {task.status === "blocked" && !isAgentRequestTask(task) && (
-                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  <AlertCircle className="h-5 w-5 text-destructive" />
                 )}
               </DialogTitle>
-              <DialogDescription className="text-[#6B6560]">
+              <DialogDescription className="text-muted-foreground">
                 Created on {new Date(task.createdAt).toLocaleDateString()}
               </DialogDescription>
             </DialogHeader>
@@ -196,7 +196,7 @@ export function TaskDetailDialog({
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Enter task title"
                   required
-                  className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                  className="border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
@@ -208,7 +208,7 @@ export function TaskDetailDialog({
                   onChange={(e) => setBody(e.target.value)}
                   placeholder="Add details about this task..."
                   rows={4}
-                  className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                  className="border-border focus:border-primary focus:ring-primary"
                 />
               </div>
 
@@ -216,7 +216,7 @@ export function TaskDetailDialog({
                 <div className="space-y-2">
                   <Label htmlFor="edit-status">Status</Label>
                   <Select value={status} onValueChange={(v) => v && setStatus(v as TaskStatus)}>
-                    <SelectTrigger className="border-[#D4CFC7]">
+                    <SelectTrigger className="border-border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -232,7 +232,7 @@ export function TaskDetailDialog({
                 <div className="space-y-2">
                   <Label htmlFor="edit-priority">Priority</Label>
                   <Select value={priority} onValueChange={(v) => v && setPriority(v)}>
-                    <SelectTrigger className="border-[#D4CFC7]">
+                    <SelectTrigger className="border-border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -249,7 +249,7 @@ export function TaskDetailDialog({
                 <Label htmlFor="edit-assignee">Assignee</Label>
                 {availableAgents && availableAgents.length > 0 ? (
                   <Select value={assignee} onValueChange={(v) => v && setAssignee(v)}>
-                    <SelectTrigger className="border-[#D4CFC7]">
+                    <SelectTrigger className="border-border">
                       <SelectValue placeholder="Select an agent" />
                     </SelectTrigger>
                     <SelectContent>
@@ -267,20 +267,20 @@ export function TaskDetailDialog({
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
                     placeholder="Assign to an agent or user"
-                    className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                    className="border-border focus:border-primary focus:ring-primary"
                   />
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label>Project</Label>
-                <p className="text-sm text-[#6B6560]">{task.project.name}</p>
+                <p className="text-sm text-muted-foreground">{task.project.name}</p>
               </div>
 
               {task.completedAt && (
                 <div className="space-y-2">
                   <Label>Completed</Label>
-                  <p className="text-sm text-green-600">
+                  <p className="text-sm text-success">
                     {new Date(task.completedAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -293,7 +293,7 @@ export function TaskDetailDialog({
                   type="button"
                   onClick={handleApproveHiring}
                   disabled={isApproving}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <UserCheck className="mr-2 h-4 w-4" />
                   {isApproving ? "Approving..." : "Approve Hiring"}
@@ -303,7 +303,7 @@ export function TaskDetailDialog({
                 type="button"
                 variant="outline"
                 onClick={() => setShowDeleteDialog(true)}
-                className="border-red-200 text-red-600 hover:bg-red-50"
+                className="border-destructive/30 text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete
@@ -313,7 +313,7 @@ export function TaskDetailDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="border-[#D4CFC7]"
+                className="border-border"
               >
                 <X className="mr-2 h-4 w-4" />
                 Cancel
@@ -321,7 +321,7 @@ export function TaskDetailDialog({
               <Button
                 type="submit"
                 disabled={isLoading || !title.trim()}
-                className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                className="bg-primary hover:bg-primary/90"
               >
                 <Save className="mr-2 h-4 w-4" />
                 {isLoading ? "Saving..." : "Save Changes"}
@@ -333,19 +333,19 @@ export function TaskDetailDialog({
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="bg-white">
+        <AlertDialogContent className="bg-card">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-serif">Delete Task</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#6B6560]">
+            <AlertDialogDescription className="text-muted-foreground">
               Are you sure you want to delete &quot;{task.title}&quot;? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#D4CFC7]">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive"
             >
               {isDeleting ? "Deleting..." : "Delete Task"}
             </AlertDialogAction>

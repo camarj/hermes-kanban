@@ -61,7 +61,7 @@ export function AgentsPageClient({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2D9AA5]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     )
   }
@@ -70,10 +70,10 @@ export function AgentsPageClient({
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-serif text-3xl font-semibold text-[#070605]">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">
             AI Agents
           </h1>
-          <p className="text-[#6B6560]">
+          <p className="text-muted-foreground">
             Manage your organization&apos;s AI agents and their capabilities
           </p>
         </div>
@@ -82,13 +82,13 @@ export function AgentsPageClient({
             variant="outline"
             size="icon"
             onClick={fetchAgents}
-            className="border-[#D4CFC7]"
+            className="border-border"
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
           <Button
             onClick={() => setIsCreateOpen(true)}
-            className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+            className="bg-primary hover:bg-primary/90"
           >
             <Plus className="mr-2 h-4 w-4" />
             New Agent
@@ -97,37 +97,37 @@ export function AgentsPageClient({
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Bot className="h-4 w-4 text-[#6B6560]" />
-            <p className="text-sm text-[#6B6560]">Total Agents</p>
+            <Bot className="h-4 w-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Total Agents</p>
           </div>
-          <p className="text-2xl font-semibold text-[#070605]">{agents.length}</p>
+          <p className="text-2xl font-semibold text-foreground">{agents.length}</p>
         </div>
-        <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Activity className="h-4 w-4 text-green-500" />
-            <p className="text-sm text-[#6B6560]">Active</p>
+            <Activity className="h-4 w-4 text-success" />
+            <p className="text-sm text-muted-foreground">Active</p>
           </div>
-          <p className="text-2xl font-semibold text-green-600">
+          <p className="text-2xl font-semibold text-success">
             {activeAgents.length}
           </p>
         </div>
-        <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Activity className="h-4 w-4 text-[#2D9AA5]" />
-            <p className="text-sm text-[#6B6560]">Hermes Synced</p>
+            <Activity className="h-4 w-4 text-primary" />
+            <p className="text-sm text-muted-foreground">Hermes Synced</p>
           </div>
-          <p className="text-2xl font-semibold text-[#2D9AA5]">
+          <p className="text-2xl font-semibold text-primary">
             {syncedAgents.length}
           </p>
         </div>
-        <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Bot className="h-4 w-4 text-[#6B6560]" />
-            <p className="text-sm text-[#6B6560]">Workers</p>
+            <Bot className="h-4 w-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Workers</p>
           </div>
-          <p className="text-2xl font-semibold text-[#070605]">
+          <p className="text-2xl font-semibold text-foreground">
             {workerAgents.length}
           </p>
         </div>
@@ -135,8 +135,8 @@ export function AgentsPageClient({
 
       {ceoAgent && (
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-[#070605] mb-3 flex items-center gap-2">
-            <Bot className="h-5 w-5 text-[#2D9AA5]" />
+          <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+            <Bot className="h-5 w-5 text-primary" />
             CEO Agent
           </h2>
           <AgentList
@@ -149,8 +149,8 @@ export function AgentsPageClient({
       )}
 
       <div>
-        <h2 className="text-lg font-semibold text-[#070605] mb-3 flex items-center gap-2">
-          <Bot className="h-5 w-5 text-[#2D9AA5]" />
+        <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+          <Bot className="h-5 w-5 text-primary" />
           Worker Agents
         </h2>
         {workerAgents.length > 0 ? (
@@ -161,13 +161,13 @@ export function AgentsPageClient({
             onAgentDeleted={handleAgentDeleted}
           />
         ) : (
-          <div className="bg-white border border-[#D4CFC7] rounded-lg p-8 text-center">
-            <Bot className="h-12 w-12 text-[#D4CFC7] mx-auto mb-3" />
-            <p className="text-[#6B6560] mb-4">No worker agents yet</p>
+          <div className="bg-card border border-border rounded-lg p-8 text-center">
+            <Bot className="h-12 w-12 text-muted-foreground/60 mx-auto mb-3" />
+            <p className="text-muted-foreground mb-4">No worker agents yet</p>
             <Button
               onClick={() => setIsCreateOpen(true)}
               variant="outline"
-              className="border-[#2D9AA5] text-[#2D9AA5] hover:bg-[#2D9AA5]/10"
+              className="border-primary text-primary hover:bg-primary/10"
             >
               <Plus className="mr-2 h-4 w-4" />
               Create your first worker agent

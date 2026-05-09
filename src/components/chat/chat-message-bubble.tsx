@@ -20,8 +20,8 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
           className={cn(
             "text-xs font-medium",
             isUser
-              ? "bg-[#E8E4DE] text-[#070605]"
-              : "bg-[#2D9AA5] text-white"
+              ? "bg-muted text-foreground"
+              : "bg-primary text-primary-foreground"
           )}
         >
           {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
@@ -32,21 +32,21 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
         className={cn(
           "max-w-[75%] rounded-lg px-4 py-2.5 text-sm leading-relaxed",
           isUser
-            ? "bg-[#2D9AA5] text-white"
-            : "bg-white border border-[#D4CFC7] text-[#070605]"
+            ? "bg-primary text-primary-foreground"
+            : "bg-card border border-border text-foreground"
         )}
       >
         {isAssistant && message.isStreaming && !message.content ? (
           <div className="flex items-center gap-1.5 py-1">
-            <span className="w-2 h-2 rounded-full bg-[#2D9AA5] animate-bounce [animation-delay:0ms]" />
-            <span className="w-2 h-2 rounded-full bg-[#2D9AA5] animate-bounce [animation-delay:150ms]" />
-            <span className="w-2 h-2 rounded-full bg-[#2D9AA5] animate-bounce [animation-delay:300ms]" />
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
           </div>
         ) : (
           <div className="whitespace-pre-wrap break-words">
             {message.content}
             {isAssistant && message.isStreaming && message.content && (
-              <span className="inline-block w-0.5 h-4 ml-0.5 bg-[#2D9AA5] animate-pulse align-text-bottom" />
+              <span className="inline-block w-0.5 h-4 ml-0.5 bg-primary animate-pulse align-text-bottom" />
             )}
           </div>
         )}

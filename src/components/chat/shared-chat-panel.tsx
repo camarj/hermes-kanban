@@ -122,20 +122,20 @@ export function SharedChatPanel({ orgId, agents }: SharedChatPanelProps) {
 
   if (agents.length === 0) {
     return (
-      <div className="h-full flex flex-col bg-white">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#D4CFC7] bg-[#F5F1EB]">
+      <div className="h-full flex flex-col bg-card">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background">
           <div className="flex items-center gap-2">
-            <h3 className="font-serif text-sm font-semibold text-[#070605]">
+            <h3 className="font-serif text-sm font-semibold text-foreground">
               Agent Chat
             </h3>
           </div>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <Bot className="h-12 w-12 text-[#D4CFC7] mb-4" />
-          <p className="text-sm text-[#6B6560] mb-2">
+          <Bot className="h-12 w-12 text-muted-foreground/60 mb-4" />
+          <p className="text-sm text-muted-foreground mb-2">
             No agents available
           </p>
-          <p className="text-xs text-[#9B9590]">
+          <p className="text-xs text-muted-foreground">
             A CEO Agent will be created automatically when you set up the Hermes Gateway.
           </p>
         </div>
@@ -144,19 +144,19 @@ export function SharedChatPanel({ orgId, agents }: SharedChatPanelProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#D4CFC7] bg-[#F5F1EB]">
+    <div className="h-full flex flex-col bg-card">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background">
         <div className="flex items-center gap-2">
-          <h3 className="font-serif text-sm font-semibold text-[#070605]">
+          <h3 className="font-serif text-sm font-semibold text-foreground">
             Agent Chat
           </h3>
           {selectedAgent && (
-            <Badge variant="outline" className="border-[#D4CFC7] text-xs">
+            <Badge variant="outline" className="border-border text-xs">
               {selectedAgent.name}
             </Badge>
           )}
           {conversationId && (
-            <Badge variant="outline" className="border-green-300 text-green-700 bg-green-50 text-xs">
+            <Badge variant="outline" className="border-success/30 text-success bg-success/10 text-xs">
               <MessageSquare className="h-3 w-3 mr-1" />
               Saved
             </Badge>
@@ -167,10 +167,10 @@ export function SharedChatPanel({ orgId, agents }: SharedChatPanelProps) {
             variant="outline"
             className={
               gatewayOnline
-                ? "border-green-300 text-green-700 bg-green-50 text-xs"
+                ? "border-success/30 text-success bg-success/10 text-xs"
                 : gatewayOnline === false
-                  ? "border-red-300 text-red-700 bg-red-50 text-xs"
-                  : "border-gray-300 text-gray-500 bg-gray-50 text-xs"
+                  ? "border-destructive/30 text-destructive bg-destructive/10 text-xs"
+                  : "border-border text-muted-foreground bg-muted text-xs"
             }
           >
             {gatewayOnline ? (
@@ -198,7 +198,7 @@ export function SharedChatPanel({ orgId, agents }: SharedChatPanelProps) {
         </ScrollArea>
       </div>
 
-      <div className="border-t border-[#D4CFC7]">
+      <div className="border-t border-border">
         <ChatInput
           onSend={sendMessage}
           isLoading={isLoading}

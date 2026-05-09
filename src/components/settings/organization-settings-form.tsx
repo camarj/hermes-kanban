@@ -90,13 +90,13 @@ export function OrganizationSettingsForm({
 
   return (
     <>
-      <Card className="border-[#D4CFC7]">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle className="font-serif flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-[#2D9AA5]" />
+            <Building2 className="h-5 w-5 text-primary" />
             Organization Details
           </CardTitle>
-          <CardDescription className="text-[#6B6560]">
+          <CardDescription className="text-muted-foreground">
             Manage your organization&apos;s basic information
           </CardDescription>
         </CardHeader>
@@ -109,7 +109,7 @@ export function OrganizationSettingsForm({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -119,9 +119,9 @@ export function OrganizationSettingsForm({
                 id="org-slug"
                 value={organization.slug}
                 disabled
-                className="bg-[#F5F1EB] border-[#D4CFC7] text-[#6B6560]"
+                className="bg-background border-border text-muted-foreground"
               />
-              <p className="text-xs text-[#6B6560]">
+              <p className="text-xs text-muted-foreground">
                 This is your organization&apos;s unique URL identifier
               </p>
             </div>
@@ -134,7 +134,7 @@ export function OrganizationSettingsForm({
                 onChange={(e) => setObjective(e.target.value)}
                 placeholder="What is your organization's main goal?"
                 rows={3}
-                className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+                className="border-border focus:border-primary focus:ring-primary"
               />
             </div>
 
@@ -143,7 +143,7 @@ export function OrganizationSettingsForm({
                 type="button"
                 variant="outline"
                 onClick={() => setShowDeleteDialog(true)}
-                className="border-red-200 text-red-600 hover:bg-red-50"
+                className="border-destructive/30 text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete Organization
@@ -151,7 +151,7 @@ export function OrganizationSettingsForm({
               <Button
                 type="submit"
                 disabled={isLoading || !name.trim()}
-                className="bg-[#2D9AA5] hover:bg-[#1A7A82]"
+                className="bg-primary hover:bg-primary/90"
               >
                 <Save className="mr-2 h-4 w-4" />
                 {isLoading ? "Saving..." : "Save Changes"}
@@ -163,35 +163,35 @@ export function OrganizationSettingsForm({
 
       {/* Stats Card */}
       {organization._count && (
-        <Card className="border-[#D4CFC7] mt-6">
+        <Card className="border-border mt-6">
           <CardHeader>
             <CardTitle className="font-serif">Organization Stats</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-[#F5F1EB] rounded-lg">
-                <p className="text-2xl font-semibold text-[#070605]">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <p className="text-2xl font-semibold text-foreground">
                   {organization._count.members}
                 </p>
-                <p className="text-sm text-[#6B6560]">Members</p>
+                <p className="text-sm text-muted-foreground">Members</p>
               </div>
-              <div className="text-center p-4 bg-[#F5F1EB] rounded-lg">
-                <p className="text-2xl font-semibold text-[#070605]">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <p className="text-2xl font-semibold text-foreground">
                   {organization._count.projects}
                 </p>
-                <p className="text-sm text-[#6B6560]">Projects</p>
+                <p className="text-sm text-muted-foreground">Projects</p>
               </div>
-              <div className="text-center p-4 bg-[#F5F1EB] rounded-lg">
-                <p className="text-2xl font-semibold text-[#070605]">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <p className="text-2xl font-semibold text-foreground">
                   {organization._count.tasks}
                 </p>
-                <p className="text-sm text-[#6B6560]">Tasks</p>
+                <p className="text-sm text-muted-foreground">Tasks</p>
               </div>
-              <div className="text-center p-4 bg-[#F5F1EB] rounded-lg">
-                <p className="text-2xl font-semibold text-[#070605]">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <p className="text-2xl font-semibold text-foreground">
                   {organization._count.agents}
                 </p>
-                <p className="text-sm text-[#6B6560]">Agents</p>
+                <p className="text-sm text-muted-foreground">Agents</p>
               </div>
             </div>
           </CardContent>
@@ -200,20 +200,20 @@ export function OrganizationSettingsForm({
 
       {/* Delete Confirmation */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="bg-white">
+        <AlertDialogContent className="bg-card">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-serif">Delete Organization</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#6B6560]">
+            <AlertDialogDescription className="text-muted-foreground">
               Are you sure you want to delete &quot;{organization.name}&quot;? This action cannot be undone. 
               All projects, tasks, and agents will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#D4CFC7]">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive"
             >
               {isDeleting ? "Deleting..." : "Delete Organization"}
             </AlertDialogAction>
