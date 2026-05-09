@@ -1,29 +1,28 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { requireAuth } from "@/lib/auth/session"
 import { hasOrganizations, getUserOrganizations } from "@/lib/organization/helpers"
-import { Button } from "@/components/ui/button"
+import { SignOutButton } from "@/components/auth/sign-out-button"
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 
 export default async function DashboardPage() {
-  const session = await requireAuth()
+  // Proxy already handles auth - if we're here, user is authenticated
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
-  // Check if user has organizations, if not redirect to onboarding
+  // No session means proxy already redirected - this shouldn't happen
+  if (!session) {
+    return null
+  }
+
+  // Check if user has organizations
   const userHasOrgs = await hasOrganizations(session.user.id)
   if (!userHasOrgs) {
     redirect("/onboarding/create-organization")
   }
 
-  // Get user's organizations
   const organizations = await getUserOrganizations(session.user.id)
-
-  async function signOut() {
-    "use server"
-    await auth.api.signOut({
-      headers: await headers()
-    })
-  }
 
   return (
     <div className="min-h-screen bg-[#F5F1EB]">
@@ -37,15 +36,7 @@ export default async function DashboardPage() {
               <span className="text-sm text-[#6B6560]">
                 {session.user.email}
               </span>
-              <form action={signOut}>
-                <Button 
-                  type="submit"
-                  variant="outline" 
-                  className="border-[#D4CFC7] hover:bg-[#E8E4DE]"
-                >
-                  Sign Out
-                </Button>
-              </form>
+              <SignOutButton />
             </div>
           </div>
         </div>

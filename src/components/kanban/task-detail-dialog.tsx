@@ -20,8 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Task, TaskStatus, COLUMNS, PRIORITY_LABELS } from "@/lib/kanban/types"
-import { AlertCircle, Trash2, Save, X } from "lucide-react"
+import { Task, TaskStatus, COLUMNS, PRIORITY_LABELS, isAgentRequestTask, getAgentRequestInfo } from "@/lib/kanban/types"
+import { AlertCircle, Trash2, Save, X, UserCheck } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,6 +54,7 @@ export function TaskDetailDialog({
 }: TaskDetailDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isApproving, setIsApproving] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   
   // Form state
@@ -137,6 +138,33 @@ export function TaskDetailDialog({
     }
   }
 
+  async function handleApproveHiring() {
+    if (!task) return
+
+    setIsApproving(true)
+    try {
+      const response = await fetch(
+        `/api/organizations/${orgId}/tasks/${task.id}/approve-hiring`,
+        { method: "POST" }
+      )
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || "Failed to approve hiring")
+      }
+
+      const data = await response.json()
+      const updatedTask = { ...task, status: "done" as TaskStatus, hermesMetadata: task.hermesMetadata }
+      onTaskUpdated?.(updatedTask)
+      onOpenChange(false)
+    } catch (error) {
+      console.error("Failed to approve hiring:", error)
+      alert(error instanceof Error ? error.message : "Failed to approve hiring")
+    } finally {
+      setIsApproving(false)
+    }
+  }
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -145,7 +173,12 @@ export function TaskDetailDialog({
             <DialogHeader>
               <DialogTitle className="font-serif flex items-center gap-2">
                 Edit Task
-                {task.status === "blocked" && (
+                {task.status === "blocked" && isAgentRequestTask(task) && (
+                  <span className="text-xs font-normal bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                    Hiring Request
+                  </span>
+                )}
+                {task.status === "blocked" && !isAgentRequestTask(task) && (
                   <AlertCircle className="h-5 w-5 text-red-500" />
                 )}
               </DialogTitle>
@@ -255,6 +288,17 @@ export function TaskDetailDialog({
             </div>
 
             <DialogFooter className="gap-2">
+              {isAgentRequestTask(task) && (
+                <Button
+                  type="button"
+                  onClick={handleApproveHiring}
+                  disabled={isApproving}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  {isApproving ? "Approving..." : "Approve Hiring"}
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="outline"

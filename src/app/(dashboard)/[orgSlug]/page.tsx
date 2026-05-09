@@ -42,5 +42,5 @@ export default async function OrgDashboardPage({
     template: null,
   }))
 
-  return <OrgPageClient orgId={organization.id} orgSlug={orgSlug} agents={agents} />
+  return <OrgPageClient orgId={organization.id} agents={agents} />
 }

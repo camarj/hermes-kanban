@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function CreateOrganizationForm() {
@@ -31,9 +32,17 @@ export function CreateOrganizationForm() {
         throw new Error(data.error || "Failed to create organization")
       }
 
-      // Redirect to dashboard after successful creation
-      router.push("/dashboard")
-      router.refresh()
+      const data = await response.json()
+      
+      // Redirect to the created organization's dashboard
+      if (data.organization?.slug) {
+        router.push(`/${data.organization.slug}`)
+        router.refresh()
+      } else {
+        // Fallback to dashboard
+        router.push("/dashboard")
+        router.refresh()
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
@@ -69,18 +78,18 @@ export function CreateOrganizationForm() {
           
           <div className="space-y-2">
             <Label htmlFor="objective" className="text-[#070605]">
-              Objective (Optional)
+              Objective
             </Label>
-            <Input
+            <Textarea
               id="objective"
-              type="text"
-              placeholder="What does your organization do?"
+              placeholder="What is your organization's main goal? Describe your mission, vision, and what you want to achieve..."
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
-              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5]"
+              rows={5}
+              className="border-[#D4CFC7] focus:border-[#2D9AA5] focus:ring-[#2D9AA5] resize-y min-h-[120px]"
             />
             <p className="text-xs text-[#6B6560]">
-              Brief description of your organization&apos;s purpose
+              Describe your organization&apos;s purpose and goals — you can write multiple paragraphs
             </p>
           </div>
 

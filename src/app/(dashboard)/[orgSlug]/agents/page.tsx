@@ -19,7 +19,12 @@ export default async function AgentsPage({
 
   return (
     <div className="p-8">
-      <AgentsPageClient orgId={organization.id} />
+      <AgentsPageClient 
+        orgId={organization.id}
+        orgSlug={organization.slug}
+        orgName={organization.name}
+        orgObjective={organization.objective}
+      />
     </div>
   )
 }

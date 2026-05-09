@@ -2,7 +2,7 @@
 
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Task, PRIORITY_COLORS, PRIORITY_LABELS } from "@/lib/kanban/types"
+import { Task, PRIORITY_COLORS, PRIORITY_LABELS, isAgentRequestTask } from "@/lib/kanban/types"
 import { cn } from "@/lib/utils"
 import { GripVertical, AlertCircle } from "lucide-react"
 
@@ -84,9 +84,13 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
             <span className="text-xs text-[#6B6560]">Unassigned</span>
           )}
 
-          {task.status === "blocked" && (
+          {task.status === "blocked" && isAgentRequestTask(task) ? (
+            <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full">
+              Hiring
+            </span>
+          ) : task.status === "blocked" ? (
             <AlertCircle className="h-4 w-4 text-red-500" />
-          )}
+          ) : null}
         </div>
       </div>
     </div>

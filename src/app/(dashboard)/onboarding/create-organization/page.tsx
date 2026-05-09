@@ -1,10 +1,17 @@
 import { redirect } from "next/navigation"
-import { requireAuth } from "@/lib/auth/session"
 import { hasOrganizations } from "@/lib/organization/helpers"
 import { CreateOrganizationForm } from "@/components/organization/create-organization-form"
+import { auth } from "@/lib/auth/auth"
+import { headers } from "next/headers"
 
 export default async function OnboardingPage() {
-  const session = await requireAuth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+  
+  if (!session) {
+    redirect("/login")
+  }
   
   // If user already has organizations, redirect to dashboard
   const userHasOrgs = await hasOrganizations(session.user.id)
