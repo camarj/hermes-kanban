@@ -123,6 +123,12 @@ export async function POST(req: NextRequest) {
         )
         const result = await profileManager.createProfile(profileInput)
         hermesProfileCreated = result.success
+        if (result.success) {
+          await prisma.agent.update({
+            where: { id: ceoAgent.id },
+            data: { profileSyncedAt: new Date() },
+          })
+        }
       } else {
         hermesProfileError = "Hermes Gateway not available. CEO profile will sync when gateway is online."
       }

@@ -54,15 +54,10 @@ export async function GET(
       orderBy: { createdAt: "desc" }
     })
 
-    const agentsWithStatus = await Promise.all(
-      agents.map(async (agent) => {
-        const profileExists = await profileManager.profileExists(agent.hermesProfile)
-        return {
-          ...agent,
-          hermesProfileSynced: profileExists,
-        }
-      })
-    )
+    const agentsWithStatus = agents.map((agent) => ({
+      ...agent,
+      hermesProfileSynced: agent.profileSyncedAt !== null,
+    }))
 
     return NextResponse.json({ agents: agentsWithStatus })
   } catch (error) {

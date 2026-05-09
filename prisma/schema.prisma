@@ -278,6 +278,7 @@ model Agent {
   webhooks          Json     @default("[]")
   apiIntegrations   Json     @default("[]")
   isActive          Boolean  @default(true)
+  profileSyncedAt   DateTime?
   createdAt         DateTime @default(now())
 
   // Relations

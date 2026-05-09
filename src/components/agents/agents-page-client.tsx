@@ -5,7 +5,7 @@ import { Agent } from "@/lib/agents/types"
 import { AgentList } from "@/components/agents/agent-list"
 import { CreateAgentDialog } from "@/components/agents/create-agent-dialog"
 import { Button } from "@/components/ui/button"
-import { Plus, RefreshCw, Bot, Activity } from "lucide-react"
+import { Plus, RefreshCw, Bot, Activity, AlertCircle } from "lucide-react"
 
 interface AgentsPageClientProps {
   orgId: string
@@ -23,6 +23,8 @@ export function AgentsPageClient({
   const [agents, setAgents] = useState<Agent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncError, setSyncError] = useState<string | null>(null)
 
   const fetchAgents = useCallback(async () => {
     setIsLoading(true)
@@ -53,10 +55,33 @@ export function AgentsPageClient({
     setAgents((prev) => prev.filter((a) => a.id !== agentId))
   }
 
+  async function handleSyncProfiles() {
+    setIsSyncing(true)
+    setSyncError(null)
+    try {
+      const response = await fetch(`/api/organizations/${orgId}/sync-profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        setSyncError(data.error || "No se pudo sincronizar")
+      } else {
+        await fetchAgents()
+      }
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : "Error de red")
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
   const ceoAgent = agents.find((a) => a.hermesProfile.includes("ceo"))
   const workerAgents = agents.filter((a) => !a.hermesProfile.includes("ceo"))
   const activeAgents = agents.filter((a) => a.isActive)
   const syncedAgents = agents.filter((a) => a.hermesProfileSynced)
+  const ceoNeedsSync = ceoAgent && !ceoAgent.hermesProfileSynced
 
   if (isLoading) {
     return (
@@ -95,6 +120,33 @@ export function AgentsPageClient({
           </Button>
         </div>
       </div>
+
+      {ceoNeedsSync && (
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-warning/40 bg-warning/10 p-4">
+          <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-foreground">
+              CEO Agent sin sincronizar con Hermes
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              El profile no se creó en el gateway (probablemente estaba caído al crear la organización). El chat con el CEO no funciona hasta que se sincronice.
+            </p>
+            {syncError && (
+              <p className="text-sm text-destructive mt-2">{syncError}</p>
+            )}
+          </div>
+          <Button
+            onClick={handleSyncProfiles}
+            disabled={isSyncing}
+            variant="outline"
+            size="sm"
+            className="border-warning/40 text-foreground hover:bg-warning/15"
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? "animate-spin" : ""}`} />
+            {isSyncing ? "Sincronizando..." : "Sincronizar"}
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="bg-card border border-border rounded-lg p-4">
