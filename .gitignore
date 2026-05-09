@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright artifacts
+/playwright-report/
+/test-results/
+/playwright/.cache/
+/tests/e2e/.auth/
+
+# local agent / skill dirs
+/.agents/
+/.claude/
+/.opencode/skills/
