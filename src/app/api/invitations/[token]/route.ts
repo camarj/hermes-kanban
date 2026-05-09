@@ -119,7 +119,7 @@ export async function POST(
 // DELETE revoke invitation
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ orgId: string; invitationId: string }> }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const session = await auth.api.getSession({
@@ -133,13 +133,24 @@ export async function DELETE(
       )
     }
 
-    const { orgId, invitationId } = await params
+    const { token } = await params
 
-    // Verify owner or board role
+    const invitation = await prisma.invitation.findUnique({
+      where: { token },
+      select: { id: true, orgId: true }
+    })
+
+    if (!invitation) {
+      return NextResponse.json(
+        { error: "Invitation not found" },
+        { status: 404 }
+      )
+    }
+
     const membership = await prisma.organizationMember.findUnique({
       where: {
         orgId_userId: {
-          orgId,
+          orgId: invitation.orgId,
           userId: session.user.id
         }
       }
@@ -153,7 +164,7 @@ export async function DELETE(
     }
 
     await prisma.invitation.delete({
-      where: { id: invitationId }
+      where: { id: invitation.id }
     })
 
     return NextResponse.json({ success: true })
