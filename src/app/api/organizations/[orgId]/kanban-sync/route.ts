@@ -21,7 +21,7 @@ export async function POST(
     where: { orgId_userId: { orgId, userId: session.user.id } },
   })
 
-  if (!membership) {
+  if (!membership || (membership.role !== "owner" && membership.role !== "board")) {
     return Response.json({ error: "Forbidden" }, { status: 403 })
   }
 
