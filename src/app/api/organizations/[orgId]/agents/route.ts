@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/db/prisma"
 import { headers } from "next/headers"
-import { profileManager, hermesClient, buildProfileName, buildCEOProfile, buildWorkerProfile } from "@/lib/hermes"
+import { profileManager, buildProfileName } from "@/lib/hermes"
+import { createAgent, listOrgAgents } from "@/lib/agents/create-agent"
+import { type CLevelRole, type WorkerSpecialization } from "@/lib/agents/types"
 
 export async function GET(
   req: NextRequest,
@@ -52,7 +54,6 @@ export async function GET(
       orderBy: { createdAt: "desc" }
     })
 
-    // Enrich with Hermes profile status
     const agentsWithStatus = await Promise.all(
       agents.map(async (agent) => {
         const profileExists = await profileManager.profileExists(agent.hermesProfile)
@@ -103,6 +104,7 @@ export async function POST(
       isActive = true,
       createHermesProfile = true,
       roleType = "worker",
+      cLevelRole,
       specialization,
       mcpServers,
     } = body
@@ -142,10 +144,21 @@ export async function POST(
       )
     }
 
-    // Generate profile name if not provided
-    const resolvedProfile = hermesProfile || buildProfileName(org.slug, name, roleType)
+    if (roleType === "ceo") {
+      const existingCeo = await prisma.agent.findFirst({
+        where: { orgId, hermesProfile: { startsWith: "ceo-" } },
+      })
+      if (existingCeo) {
+        return NextResponse.json(
+          { error: "This organization already has a CEO agent" },
+          { status: 409 }
+        )
+      }
+    }
 
-    // Check profile uniqueness
+    const resolvedRoleType = roleType as "ceo" | "c-level" | "worker"
+    const resolvedProfile = hermesProfile || buildProfileName(org.slug, name, resolvedRoleType)
+
     const existingAgent = await prisma.agent.findUnique({
       where: { hermesProfile: resolvedProfile }
     })
@@ -157,7 +170,6 @@ export async function POST(
       )
     }
 
-    // If templateId provided, verify it exists
     if (templateId) {
       const template = await prisma.agentTemplate.findFirst({
         where: {
@@ -176,98 +188,28 @@ export async function POST(
       }
     }
 
-    // Create agent in DB
-    const agent = await prisma.agent.create({
-      data: {
-        name: name.trim(),
-        description: description?.trim() || null,
-        hermesProfile: resolvedProfile,
-        soulContent: soulContent?.trim() || null,
-        skills: skills || [],
-        tools: tools || [],
-        toolsets: toolsets || [],
-        orgId,
-        templateId: templateId || null,
-        isActive,
-        mcpServers: mcpServers || [],
-        webhooks: [],
-        apiIntegrations: []
-      },
-      include: {
-        template: {
-          select: {
-            id: true,
-            name: true,
-            roleType: true
-          }
-        }
-      }
+    const result = await createAgent({
+      orgId,
+      name,
+      description,
+      roleType: roleType as "ceo" | "c-level" | "worker",
+      cLevelRole: cLevelRole as CLevelRole | undefined,
+      specialization: specialization as WorkerSpecialization | undefined,
+      soulContent,
+      skills,
+      tools,
+      toolsets,
+      templateId,
+      mcpServers,
+      isActive,
     })
 
-    // Create Hermes profile if requested and gateway is available
-    let hermesProfileCreated = false
-    let hermesProfileError: string | null = null
-
-    if (createHermesProfile) {
-      const gatewayAvailable = await hermesClient.health()
-
-      if (gatewayAvailable) {
-        try {
-          // Get all org agents for CEO soul content
-          const orgAgents = await prisma.agent.findMany({
-            where: { orgId, isActive: true },
-            select: { name: true, hermesProfile: true, template: { select: { roleType: true } } },
-          })
-
-          const agentsList = orgAgents.map(a => ({
-            name: a.name,
-            role: a.template?.roleType || "worker",
-            profile: a.hermesProfile,
-          }))
-
-          let profileInput
-          if (roleType === "ceo") {
-            profileInput = buildCEOProfile(
-              org.slug,
-              org.name,
-              org.objective || undefined,
-              agentsList,
-            )
-          } else {
-            profileInput = buildWorkerProfile(
-              org.slug,
-              name,
-              (specialization as "backend" | "frontend" | "research" | "general") || "general",
-              org.name,
-              org.objective || undefined,
-              mcpServers?.length ? { mcpServers } : undefined,
-            )
-          }
-
-          // Override with user-provided soul content if given
-          if (soulContent) {
-            profileInput.soulContent = soulContent
-          }
-
-          // Override profile name with resolved value
-          profileInput.profileName = resolvedProfile
-
-          const result = await profileManager.createProfile(profileInput)
-          hermesProfileCreated = result.success
-        } catch (error) {
-          hermesProfileError = error instanceof Error ? error.message : "Failed to create Hermes profile"
-          console.error("Failed to create Hermes profile:", error)
-        }
-      } else {
-        hermesProfileError = "Hermes Gateway not available. Profile will need to be created manually."
-      }
+    if (result.hermesProfileError && !result.agent.id) {
+      return NextResponse.json({ error: result.hermesProfileError }, { status: 409 })
     }
 
-    return NextResponse.json({
-      agent,
-      hermesProfileCreated,
-      hermesProfileError,
-    }, { status: 201 })
+    const status = result.agent.id ? 201 : 500
+    return NextResponse.json(result, { status })
   } catch (error) {
     console.error("Failed to create agent:", error)
     return NextResponse.json(

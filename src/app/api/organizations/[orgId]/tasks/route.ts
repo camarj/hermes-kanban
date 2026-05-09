@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/db/prisma"
 import { headers } from "next/headers"
+import { broadcastSSE } from "@/lib/sse-broadcast"
 
 export async function GET(
   req: NextRequest,
@@ -159,7 +160,8 @@ export async function POST(
         status: status || "triage",
         priority: priority ?? 0,
         orgId,
-        projectId: targetProjectId
+        projectId: targetProjectId,
+        assignee: body.assignee || null,
       },
       include: {
         project: {
@@ -169,6 +171,11 @@ export async function POST(
           }
         }
       }
+    })
+
+    broadcastSSE(orgId, {
+      type: "task:created",
+      payload: { task }
     })
 
     return NextResponse.json({ task }, { status: 201 })

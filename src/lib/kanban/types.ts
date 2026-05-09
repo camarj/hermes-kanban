@@ -9,9 +9,36 @@ export interface Task {
   orgId: string
   createdAt: string
   completedAt: string | null
+  blockedReason: string | null
+  hermesMetadata: Record<string, unknown> | null
   project: {
     id: string
     name: string
+  }
+}
+
+export function isAgentRequestTask(task: Task): boolean {
+  return (
+    task.status === "blocked" &&
+    task.hermesMetadata?.type === "agent_request"
+  )
+}
+
+export function getAgentRequestInfo(task: Task): {
+  roleType: string
+  cLevelRole?: string
+  specialization?: string
+  nameSuggestion?: string
+  reason?: string
+} | null {
+  if (!isAgentRequestTask(task)) return null
+  const meta = task.hermesMetadata as Record<string, string>
+  return {
+    roleType: meta.role_type || "worker",
+    cLevelRole: meta.c_level_role || undefined,
+    specialization: meta.specialization || undefined,
+    nameSuggestion: meta.name_suggestion || undefined,
+    reason: meta.reason || undefined,
   }
 }
 

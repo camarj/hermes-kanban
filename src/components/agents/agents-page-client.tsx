@@ -5,13 +5,21 @@ import { Agent } from "@/lib/agents/types"
 import { AgentList } from "@/components/agents/agent-list"
 import { CreateAgentDialog } from "@/components/agents/create-agent-dialog"
 import { Button } from "@/components/ui/button"
-import { Plus, RefreshCw } from "lucide-react"
+import { Plus, RefreshCw, Bot, Activity } from "lucide-react"
 
 interface AgentsPageClientProps {
   orgId: string
+  orgSlug: string
+  orgName: string
+  orgObjective?: string | null
 }
 
-export function AgentsPageClient({ orgId }: AgentsPageClientProps) {
+export function AgentsPageClient({ 
+  orgId, 
+  orgSlug, 
+  orgName, 
+  orgObjective 
+}: AgentsPageClientProps) {
   const [agents, setAgents] = useState<Agent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
@@ -44,6 +52,11 @@ export function AgentsPageClient({ orgId }: AgentsPageClientProps) {
   function handleAgentDeleted(agentId: string) {
     setAgents((prev) => prev.filter((a) => a.id !== agentId))
   }
+
+  const ceoAgent = agents.find((a) => a.hermesProfile.includes("ceo"))
+  const workerAgents = agents.filter((a) => !a.hermesProfile.includes("ceo"))
+  const activeAgents = agents.filter((a) => a.isActive)
+  const syncedAgents = agents.filter((a) => a.hermesProfileSynced)
 
   if (isLoading) {
     return (
@@ -83,40 +96,95 @@ export function AgentsPageClient({ orgId }: AgentsPageClientProps) {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
-          <p className="text-sm text-[#6B6560]">Total Agents</p>
+          <div className="flex items-center gap-2 mb-1">
+            <Bot className="h-4 w-4 text-[#6B6560]" />
+            <p className="text-sm text-[#6B6560]">Total Agents</p>
+          </div>
           <p className="text-2xl font-semibold text-[#070605]">{agents.length}</p>
         </div>
         <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
-          <p className="text-sm text-[#6B6560]">Active</p>
+          <div className="flex items-center gap-2 mb-1">
+            <Activity className="h-4 w-4 text-green-500" />
+            <p className="text-sm text-[#6B6560]">Active</p>
+          </div>
           <p className="text-2xl font-semibold text-green-600">
-            {agents.filter((a) => a.isActive).length}
+            {activeAgents.length}
           </p>
         </div>
         <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
-          <p className="text-sm text-[#6B6560]">Inactive</p>
-          <p className="text-2xl font-semibold text-gray-500">
-            {agents.filter((a) => !a.isActive).length}
+          <div className="flex items-center gap-2 mb-1">
+            <Activity className="h-4 w-4 text-[#2D9AA5]" />
+            <p className="text-sm text-[#6B6560]">Hermes Synced</p>
+          </div>
+          <p className="text-2xl font-semibold text-[#2D9AA5]">
+            {syncedAgents.length}
+          </p>
+        </div>
+        <div className="bg-white border border-[#D4CFC7] rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <Bot className="h-4 w-4 text-[#6B6560]" />
+            <p className="text-sm text-[#6B6560]">Workers</p>
+          </div>
+          <p className="text-2xl font-semibold text-[#070605]">
+            {workerAgents.length}
           </p>
         </div>
       </div>
 
-      {/* Agent List */}
-      <AgentList
-        agents={agents}
-        orgId={orgId}
-        onAgentUpdated={handleAgentUpdated}
-        onAgentDeleted={handleAgentDeleted}
-      />
+      {ceoAgent && (
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-[#070605] mb-3 flex items-center gap-2">
+            <Bot className="h-5 w-5 text-[#2D9AA5]" />
+            CEO Agent
+          </h2>
+          <AgentList
+            agents={[ceoAgent]}
+            orgId={orgId}
+            onAgentUpdated={handleAgentUpdated}
+            onAgentDeleted={handleAgentDeleted}
+          />
+        </div>
+      )}
 
-      {/* Create Dialog */}
+      <div>
+        <h2 className="text-lg font-semibold text-[#070605] mb-3 flex items-center gap-2">
+          <Bot className="h-5 w-5 text-[#2D9AA5]" />
+          Worker Agents
+        </h2>
+        {workerAgents.length > 0 ? (
+          <AgentList
+            agents={workerAgents}
+            orgId={orgId}
+            onAgentUpdated={handleAgentUpdated}
+            onAgentDeleted={handleAgentDeleted}
+          />
+        ) : (
+          <div className="bg-white border border-[#D4CFC7] rounded-lg p-8 text-center">
+            <Bot className="h-12 w-12 text-[#D4CFC7] mx-auto mb-3" />
+            <p className="text-[#6B6560] mb-4">No worker agents yet</p>
+            <Button
+              onClick={() => setIsCreateOpen(true)}
+              variant="outline"
+              className="border-[#2D9AA5] text-[#2D9AA5] hover:bg-[#2D9AA5]/10"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create your first worker agent
+            </Button>
+          </div>
+        )}
+      </div>
+
       <CreateAgentDialog
         orgId={orgId}
+        orgSlug={orgSlug}
+        orgName={orgName}
+        orgObjective={orgObjective}
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
         onAgentCreated={fetchAgents}
+        hasCeoAgent={agents.some((a) => a.hermesProfile.startsWith("ceo-"))}
       />
     </div>
   )

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/db/prisma"
 import { headers } from "next/headers"
+import { broadcastSSE } from "@/lib/sse-broadcast"
 
 export async function PATCH(
   req: NextRequest,
@@ -83,6 +84,11 @@ export async function PATCH(
       }
     })
 
+    broadcastSSE(orgId, {
+      type: "task:updated",
+      payload: { task }
+    })
+
     return NextResponse.json({ task })
   } catch (error) {
     console.error("Failed to update task:", error)
@@ -145,6 +151,11 @@ export async function DELETE(
 
     await prisma.task.delete({
       where: { id: taskId }
+    })
+
+    broadcastSSE(orgId, {
+      type: "task:deleted",
+      payload: { taskId }
     })
 
     return NextResponse.json({ success: true })
