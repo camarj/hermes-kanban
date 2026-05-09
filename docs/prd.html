@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="es" class="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hermes Multi-Agent Platform — PRD validable</title>
+<meta name="description" content="Resumen visual del Product Requirements Document para validación de stakeholders." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal-500: #2D9AA5;
+    --teal-700: #1F6F78;
+    --teal-50:  #EAF4F5;
+
+    --ivory-50:  #FAF7F2;
+    --ivory-100: #F5F1EB;
+    --ivory-200: #EDE8DE;
+    --ivory-300: #E0D9CC;
+
+    --ink-50:   #1C1A17;
+    --ink-100:  #141210;
+    --ink-200:  #0F0D0B;
+    --ink-900:  #070605;
+
+    --success: #5A8A42;
+    --warning: #C67E2F;
+    --danger:  #B64545;
+    --info:    #3A7A95;
+
+    /* Mapped (light) */
+    --bg:        var(--ivory-100);
+    --bg-soft:   var(--ivory-50);
+    --bg-muted:  var(--ivory-200);
+    --fg:        var(--ink-100);
+    --fg-soft:   #4A453D;
+    --rule:      rgba(20, 18, 16, 0.14);
+    --rule-soft: rgba(20, 18, 16, 0.06);
+    --primary:   var(--teal-500);
+    --primary-fg:var(--ivory-50);
+  }
+
+  html.dark {
+    --bg:        var(--ink-900);
+    --bg-soft:   var(--ink-200);
+    --bg-muted:  var(--ink-100);
+    --fg:        var(--ivory-200);
+    --fg-soft:   #9B958A;
+    --rule:      rgba(237, 232, 222, 0.12);
+    --rule-soft: rgba(237, 232, 222, 0.05);
+    --primary:   var(--teal-500);
+    --primary-fg:var(--ivory-50);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0;
+  }
+  h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); }
+  h2 { font-size: clamp(1.8rem, 3.2vw, 2.4rem); }
+  h3 { font-size: 1.35rem; }
+  h4 { font-size: 1.1rem; }
+  p  { margin: 0 0 1em; }
+
+  code, .mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.9em;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--fg-soft);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* ===== HEADER ===== */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-dot {
+    width: 10px; height: 10px; background: var(--primary);
+    border-radius: 50%;
+  }
+  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-links a {
+    font-size: 0.85rem; color: var(--fg-soft);
+    text-decoration: none; transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--primary); }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--rule);
+    color: var(--fg); cursor: pointer;
+    border-radius: 999px; padding: 6px 14px;
+    font-size: 0.78rem; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .theme-toggle:hover { background: var(--bg-muted); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .hero h1 { max-width: 18ch; }
+  .hero .lead {
+    font-size: 1.18rem;
+    color: var(--fg-soft);
+    max-width: 60ch;
+    margin: 24px 0 32px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.78rem; color: var(--fg-soft);
+    margin-bottom: 24px;
+  }
+  .pill-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
+
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 18px; margin-top: 48px;
+  }
+  .stat {
+    padding: 22px 20px; background: var(--bg-soft);
+    border: 1px solid var(--rule); border-radius: 14px;
+  }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem; font-weight: 600;
+    color: var(--primary);
+  }
+  .stat-label { font-size: 0.85rem; color: var(--fg-soft); margin-top: 4px; }
+
+  /* ===== SECTION ===== */
+  section.block { padding: 80px 0; border-bottom: 1px solid var(--rule-soft); }
+  section.block:last-of-type { border-bottom: 0; }
+  .section-head { max-width: 65ch; margin-bottom: 48px; }
+  .section-head p { color: var(--fg-soft); font-size: 1.05rem; margin-top: 12px; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .card h3 { margin-bottom: 8px; }
+  .card .meta { color: var(--fg-soft); font-size: 0.92rem; }
+
+  .card-grid {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  /* ===== ROLE CARDS ===== */
+  .role-card {
+    position: relative; overflow: hidden;
+  }
+  .role-card .role-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+    display: grid; place-items: center;
+    margin-bottom: 16px;
+  }
+  .role-card.board .role-icon { background: color-mix(in srgb, var(--info) 14%, transparent); color: var(--info); }
+  .role-card.member .role-icon { background: color-mix(in srgb, var(--fg-soft) 16%, transparent); color: var(--fg-soft); }
+  .role-perms {
+    list-style: none; padding: 0; margin: 14px 0 0;
+    font-size: 0.92rem; color: var(--fg-soft);
+  }
+  .role-perms li {
+    display: flex; gap: 8px; align-items: center;
+    padding: 4px 0;
+  }
+  .role-perms .check { color: var(--success); font-weight: 600; }
+  .role-perms .x { color: var(--danger); font-weight: 600; }
+
+  /* ===== TABLES ===== */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule); border-radius: 14px;
+    overflow: hidden;
+  }
+  .compare-table th, .compare-table td {
+    padding: 14px 18px; text-align: left;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 0.92rem;
+  }
+  .compare-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--fg-soft);
+    background: var(--bg-muted);
+    font-weight: 500;
+  }
+  .compare-table tr:last-child td { border-bottom: 0; }
+  .compare-table .ours { color: var(--primary); font-weight: 500; }
+
+  /* ===== DIAGRAM ===== */
+  .diagram {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .diagram svg { display: block; max-width: 100%; height: auto; }
+  .diagram-caption {
+    text-align: center; color: var(--fg-soft);
+    font-size: 0.85rem; margin-top: 16px;
+  }
+
+  /* ===== FLOW STEPS ===== */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  @media (max-width: 800px) { .flow { grid-template-columns: 1fr; } }
+  .flow-step {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 20px 18px;
+    position: relative;
+  }
+  .flow-step .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--primary); color: var(--primary-fg);
+    display: grid; place-items: center;
+    font-size: 0.8rem; font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .flow-step h4 { font-size: 0.96rem; margin-bottom: 6px; }
+  .flow-step p { font-size: 0.84rem; color: var(--fg-soft); margin: 0; line-height: 1.5; }
+
+  /* ===== KANBAN MOCKUP ===== */
+  .kanban-mock {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 800px) { .kanban-mock { grid-template-columns: repeat(2, 1fr); } }
+  .kanban-col {
+    background: var(--bg-muted);
+    border-radius: 10px;
+    padding: 12px 10px;
+    min-height: 160px;
+  }
+  .kanban-col-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--fg-soft);
+    margin-bottom: 10px;
+    display: flex; justify-content: space-between;
+  }
+  .kanban-col-count {
+    background: var(--bg-soft); border-radius: 999px;
+    padding: 1px 8px; font-size: 0.7rem;
+  }
+  .kanban-task {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 0.78rem;
+  }
+  .kanban-task .assign {
+    color: var(--fg-soft); font-size: 0.7rem; margin-top: 4px;
+  }
+  .kanban-task.blocked { border-left: 3px solid var(--warning); }
+  .kanban-task.running { border-left: 3px solid var(--primary); }
+  .kanban-task.done { opacity: 0.6; }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; margin-top: 40px; }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 14px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--rule);
+  }
+  .phase {
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 32px;
+  }
+  .phase::before {
+    content: ''; position: absolute; left: 8px; top: 6px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--primary);
+  }
+  .phase.done::before { background: var(--primary); }
+  .phase-head {
+    display: flex; gap: 12px; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .phase-head h3 { font-size: 1.15rem; }
+  .phase-dur {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--fg-soft);
+  }
+  .phase ul { margin: 8px 0; padding-left: 20px; color: var(--fg-soft); font-size: 0.95rem; }
+  .phase ul li { margin: 4px 0; }
+  .phase-status {
+    display: inline-block; padding: 2px 10px;
+    border-radius: 999px; font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 8px;
+  }
+  .phase-status.shipped {
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
+  }
+  .phase-status.next {
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary);
+  }
+  .phase-status.future {
+    background: var(--bg-muted);
+    color: var(--fg-soft);
+  }
+
+  /* ===== AC CHART ===== */
+  .ac-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: 1fr;
+  }
+  .ac-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 18px; align-items: center;
+  }
+  @media (max-width: 700px) {
+    .ac-row { grid-template-columns: 1fr; }
+  }
+  .ac-name { font-weight: 500; font-size: 0.95rem; }
+  .ac-bar {
+    height: 28px; display: flex;
+    background: var(--bg-muted); border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--rule-soft);
+  }
+  .ac-must    { background: var(--primary); }
+  .ac-should  { background: color-mix(in srgb, var(--primary) 50%, var(--bg-muted)); }
+  .ac-nice    { background: color-mix(in srgb, var(--primary) 22%, var(--bg-muted)); }
+  .ac-bar > div {
+    display: grid; place-items: center;
+    color: var(--primary-fg);
+    font-size: 0.78rem; font-weight: 500;
+  }
+  .ac-bar > div.ac-should, .ac-bar > div.ac-nice { color: var(--fg); }
+  .ac-legend {
+    display: flex; gap: 18px; font-size: 0.85rem;
+    color: var(--fg-soft); margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .ac-legend > span { display: flex; align-items: center; gap: 8px; }
+  .ac-legend i {
+    display: inline-block; width: 14px; height: 14px;
+    border-radius: 3px;
+  }
+
+  /* ===== CALLOUT ===== */
+  .callout {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin: 28px 0;
+  }
+  .callout-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+
+  /* ===== METRICS ===== */
+  .metric {
+    text-align: left;
+  }
+  .metric-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem; font-weight: 600;
+    color: var(--primary); line-height: 1;
+  }
+  .metric-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--fg-soft);
+    margin-top: 6px;
+  }
+  .metric-target { font-size: 0.85rem; color: var(--fg); margin-top: 8px; }
+
+  /* ===== RISK CARDS ===== */
+  .risk { border-left: 3px solid var(--warning); }
+  .risk-tag {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .risk-tag.high { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+  .risk-tag.med  { background: color-mix(in srgb, var(--warning) 18%, transparent); color: var(--warning); }
+  .risk-tag.low  { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
+
+  /* ===== FOOTER ===== */
+  footer.site {
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+  .approval {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px; margin-top: 28px;
+  }
+  .approval-row {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .approval-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--fg-soft);
+    margin-bottom: 8px;
+  }
+  .approval-line {
+    border-bottom: 1px dashed var(--rule);
+    height: 22px;
+  }
+
+  /* ===== UTIL ===== */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+  .anchor { display: block; height: 0; visibility: hidden; transform: translateY(-80px); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container nav">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Hermes Multi-Agent · PRD
+    </div>
+    <div class="nav-links">
+      <a href="#vision">Visión</a>
+      <a href="#arquitectura">Cómo funciona</a>
+      <a href="#roles">Roles</a>
+      <a href="#paginas">UI</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#criterios">Criterios</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============= HERO ============= -->
+<div class="hero">
+  <div class="container">
+    <span class="pill"><span class="pill-dot"></span> PRD validable · v1.0 · 2026</span>
+    <h1>Una empresa donde la junta directiva delega y un equipo de agentes ejecuta.</h1>
+    <p class="lead">
+      Estamos construyendo una plataforma multi-agente con UI propia que se monta encima
+      de Hermes Agent. La idea: que cualquier persona de tu junta directiva pueda darle
+      una instrucción a un agente CEO en lenguaje natural, y que ese CEO descomponga
+      el trabajo y lo asigne a un equipo de agentes especializados que tú mismo configuras.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">roles de usuario</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">features principales</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">52</div>
+        <div class="stat-label">criterios «must have»</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">~13&nbsp;sem</div>
+        <div class="stat-label">para MVP completo</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 40px;">
+      <div class="callout-title">Para validar este documento</div>
+      <p style="margin: 0; color: var(--fg-soft);">
+        Si algo de lo que lees no coincide con lo que tienes en mente, anótalo
+        para la próxima conversación. Las secciones más sensibles para validar son:
+        <strong>roles &amp; permisos</strong>, <strong>flujo de la tarea</strong> y
+        <strong>roadmap</strong>. Lo demás es ejecución técnica.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============= VISION ============= -->
+<a class="anchor" id="vision"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">01 · Visión del producto</span>
+      <h2>¿En qué se diferencia de Paperclip?</h2>
+      <p>
+        Paperclip popularizó la idea de "contratar" agentes. Nosotros tomamos esa misma
+        promesa pero le agregamos tres cosas: una capa de organización (como una empresa
+        real con junta directiva), un motor abierto y extensible (Hermes), y una UI que
+        se siente menos a "consola técnica" y más a producto editorial.
+      </p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspecto</th>
+          <th>Paperclip</th>
+          <th>Esta plataforma</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Motor de agentes</td>
+          <td>Propietario · cerrado</td>
+          <td class="ours">Hermes Agent · open source · extensible</td>
+        </tr>
+        <tr>
+          <td>UI</td>
+          <td>Genérica</td>
+          <td class="ours">Inteliside Design System · editorial</td>
+        </tr>
+        <tr>
+          <td>Nivel de abstracción</td>
+          <td>Agentes directos</td>
+          <td class="ours">Organización → Proyectos → Tareas</td>
+        </tr>
+        <tr>
+          <td>Roles humanos</td>
+          <td>Owner + agentes</td>
+          <td class="ours">Owner + Junta Directiva + Member</td>
+        </tr>
+        <tr>
+          <td>Aislamiento</td>
+          <td>Por usuario</td>
+          <td class="ours">Multi-tenant con organizaciones</td>
+        </tr>
+        <tr>
+          <td>Extensibilidad</td>
+          <td>Limitada</td>
+          <td class="ours">MCP servers, Tools, Skills, Webhooks, APIs</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card-grid" style="margin-top: 36px;">
+      <div class="card">
+        <div class="eyebrow">Capacidad 1</div>
+        <h3>CEO Agent</h3>
+        <p class="meta">Agente orquestador. Recibe instrucciones de la junta y delega a especialistas. No ejecuta directamente.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Capacidad 2</div>
+        <h3>Equipo de agentes</h3>
+        <p class="meta">Templates pre-armados (CEO, C-Level, Workers) + agentes custom con skills, tools, MCP y webhooks.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Capacidad 3</div>
+        <h3>Kanban visual</h3>
+        <p class="meta">Tablero con drag &amp; drop. Sincronizado en ambas direcciones con Hermes.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Capacidad 4</div>
+        <h3>Human-in-the-loop</h3>
+        <p class="meta">Tareas críticas se bloquean esperando aprobación de un miembro de la junta antes de continuar.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Capacidad 5</div>
+        <h3>Tiempo real</h3>
+        <p class="meta">Server-Sent Events para que veas el estado del board y los agentes actualizándose en vivo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ARQUITECTURA ============= -->
+<a class="anchor" id="arquitectura"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">02 · Cómo funciona</span>
+      <h2>Una persona pide. El CEO descompone. Los workers ejecutan.</h2>
+      <p>
+        Este es el flujo en su versión más simple. Los detalles técnicos
+        (Postgres, SQLite de Hermes, gateway en :8642) están abajo en la
+        sección de arquitectura, pero para validar el producto solo importa
+        este loop.
+      </p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 980 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de flujo del sistema">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="var(--fg-soft)" />
+          </marker>
+        </defs>
+
+        <!-- Person -->
+        <g>
+          <circle cx="90" cy="80" r="28" fill="none" stroke="var(--fg-soft)" stroke-width="1.5" />
+          <path d="M62 130 Q90 100 118 130" stroke="var(--fg-soft)" stroke-width="1.5" fill="none" />
+          <text x="90" y="170" text-anchor="middle" font-family="Inter" font-size="13" fill="var(--fg)" font-weight="500">Junta Directiva</text>
+          <text x="90" y="188" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg-soft)">humano</text>
+        </g>
+
+        <!-- Chat box -->
+        <g>
+          <rect x="220" y="55" width="170" height="70" rx="12" fill="var(--bg)" stroke="var(--rule)" stroke-width="1.5" />
+          <text x="305" y="85" text-anchor="middle" font-family="Fraunces" font-size="14" font-weight="600" fill="var(--fg)">Chat UI</text>
+          <text x="305" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg-soft)">"lanza el MVP en Q2"</text>
+        </g>
+
+        <!-- Arrow person -> chat -->
+        <line x1="125" y1="80" x2="215" y2="80" stroke="var(--fg-soft)" stroke-width="1.5" marker-end="url(#arrow)" />
+
+        <!-- CEO -->
+        <g>
+          <rect x="450" y="40" width="180" height="100" rx="14" fill="color-mix(in srgb, var(--primary) 8%, transparent)" stroke="var(--primary)" stroke-width="1.5" />
+          <text x="540" y="75" text-anchor="middle" font-family="Fraunces" font-size="16" font-weight="600" fill="var(--primary)">CEO Agent</text>
+          <text x="540" y="98" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">descompone el</text>
+          <text x="540" y="114" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">objetivo en tareas</text>
+        </g>
+
+        <!-- Arrow chat -> ceo -->
+        <line x1="395" y1="90" x2="445" y2="90" stroke="var(--fg-soft)" stroke-width="1.5" marker-end="url(#arrow)" />
+
+        <!-- Kanban -->
+        <g>
+          <rect x="700" y="40" width="220" height="100" rx="14" fill="var(--bg)" stroke="var(--rule)" stroke-width="1.5" />
+          <text x="810" y="70" text-anchor="middle" font-family="Fraunces" font-size="14" font-weight="600" fill="var(--fg)">Kanban Board</text>
+          <!-- Mini columns -->
+          <rect x="715" y="85" width="40" height="40" rx="4" fill="var(--bg-muted)" />
+          <rect x="760" y="85" width="40" height="40" rx="4" fill="var(--bg-muted)" />
+          <rect x="805" y="85" width="40" height="40" rx="4" fill="var(--bg-muted)" />
+          <rect x="850" y="85" width="40" height="40" rx="4" fill="var(--bg-muted)" />
+          <rect x="720" y="92" width="30" height="6" rx="2" fill="var(--primary)" />
+          <rect x="720" y="103" width="22" height="6" rx="2" fill="var(--primary)" opacity="0.5" />
+        </g>
+
+        <!-- Arrow CEO -> Kanban -->
+        <line x1="635" y1="90" x2="695" y2="90" stroke="var(--fg-soft)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)" />
+        <text x="665" y="80" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--fg-soft)">crea</text>
+
+        <!-- Workers -->
+        <g>
+          <rect x="200" y="270" width="170" height="70" rx="12" fill="var(--bg)" stroke="var(--rule)" stroke-width="1.5" />
+          <text x="285" y="298" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">Backend Dev</text>
+          <text x="285" y="316" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg-soft)">worker · Python · MCP</text>
+        </g>
+        <g>
+          <rect x="405" y="270" width="170" height="70" rx="12" fill="var(--bg)" stroke="var(--rule)" stroke-width="1.5" />
+          <text x="490" y="298" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">Designer</text>
+          <text x="490" y="316" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg-soft)">worker · Figma · Pencil</text>
+        </g>
+        <g>
+          <rect x="610" y="270" width="170" height="70" rx="12" fill="var(--bg)" stroke="var(--rule)" stroke-width="1.5" />
+          <text x="695" y="298" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">QA</text>
+          <text x="695" y="316" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--fg-soft)">worker · Playwright</text>
+        </g>
+
+        <!-- Arrows CEO -> Workers -->
+        <line x1="510" y1="140" x2="285" y2="265" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow)" />
+        <line x1="540" y1="140" x2="490" y2="265" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow)" />
+        <line x1="570" y1="140" x2="695" y2="265" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow)" />
+        <text x="540" y="210" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--primary)" font-weight="500">delega</text>
+
+        <!-- Approval loop -->
+        <g>
+          <rect x="350" y="380" width="280" height="60" rx="10" fill="color-mix(in srgb, var(--warning) 10%, transparent)" stroke="var(--warning)" stroke-width="1.5" />
+          <text x="490" y="405" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">¿Decisión crítica?</text>
+          <text x="490" y="424" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">Worker bloquea tarea · pide aprobación humana</text>
+        </g>
+        <line x1="490" y1="345" x2="490" y2="375" stroke="var(--warning)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)" />
+        <line x1="350" y1="410" x2="125" y2="180" stroke="var(--warning)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)" />
+      </svg>
+    </div>
+    <p class="diagram-caption">El humano habla. El CEO orquesta. Los workers ejecutan. Cuando hay duda, el sistema vuelve a preguntar.</p>
+  </div>
+</section>
+
+<!-- ============= FLOW ============= -->
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">03 · El recorrido de una tarea</span>
+      <h2>Cinco estaciones desde "se me ocurrió" hasta "está hecho"</h2>
+      <p>Cualquier tarea pasa por estas etapas. Las puedes ver en el tablero como columnas.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <h4>Triage</h4>
+        <p>El CEO captura la idea pero todavía no la ha descompuesto. Aquí caen tareas nuevas.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <h4>To Do</h4>
+        <p>Tarea descompuesta y lista para asignar. Tú o el CEO eligen al agente adecuado.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <h4>Ready</h4>
+        <p>Asignada a un worker. El dispatcher de Hermes la moverá a Running cuando haya capacidad.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <h4>Running / Blocked</h4>
+        <p>Worker trabajando. Si encuentra una decisión crítica, la bloquea esperando tu aprobación.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <h4>Done</h4>
+        <p>Tarea completada con resumen. Notificación a la junta directiva.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px;">
+      <h3 style="margin-bottom: 16px;">Cómo se ve en el tablero</h3>
+      <div class="diagram" style="padding: 20px;">
+        <div class="kanban-mock">
+          <div class="kanban-col">
+            <div class="kanban-col-title">Triage <span class="kanban-col-count">2</span></div>
+            <div class="kanban-task">Investigar competencia<div class="assign">— sin asignar</div></div>
+            <div class="kanban-task">Definir KPIs Q3<div class="assign">— sin asignar</div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title">To Do <span class="kanban-col-count">3</span></div>
+            <div class="kanban-task">Diseñar landing<div class="assign">→ Designer</div></div>
+            <div class="kanban-task">Setup CI<div class="assign">→ DevOps</div></div>
+            <div class="kanban-task">Schema de auth<div class="assign">→ Backend Dev</div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title">Ready <span class="kanban-col-count">1</span></div>
+            <div class="kanban-task">Wireframes onboarding<div class="assign">→ Designer</div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title">Running <span class="kanban-col-count">2</span></div>
+            <div class="kanban-task running">Endpoint /tasks<div class="assign">→ Backend Dev</div></div>
+            <div class="kanban-task running">E2E auth flow<div class="assign">→ QA</div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title">Blocked <span class="kanban-col-count">1</span></div>
+            <div class="kanban-task blocked">Pagar Vercel Pro<div class="assign">requiere aprobación</div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title">Done <span class="kanban-col-count">5</span></div>
+            <div class="kanban-task done">Setup repo<div class="assign">→ DevOps</div></div>
+            <div class="kanban-task done">Logo final<div class="assign">→ Designer</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ROLES ============= -->
+<a class="anchor" id="roles"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">04 · Roles y permisos</span>
+      <h2>Tres tipos de usuarios. Tres niveles de poder.</h2>
+      <p>
+        Esta sección es <strong>crítica de validar</strong>. Si esperabas más roles
+        (admin, finance, viewer, guest…) o un sistema de permisos granular,
+        avísanos antes de que codifiquemos.
+      </p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card role-card owner">
+        <div class="role-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>
+        </div>
+        <h3>Owner</h3>
+        <p class="meta">El que crea la organización. Control total, incluida la posibilidad de eliminarla.</p>
+        <ul class="role-perms">
+          <li><span class="check">✓</span> Crear y eliminar la organización</li>
+          <li><span class="check">✓</span> Todas las acciones de Junta</li>
+          <li><span class="check">✓</span> Configurar facturación (futuro)</li>
+        </ul>
+      </div>
+
+      <div class="card role-card board">
+        <div class="role-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Junta Directiva</h3>
+        <p class="meta">Quienes delegan al CEO y aprueban decisiones críticas. El día a día del producto.</p>
+        <ul class="role-perms">
+          <li><span class="check">✓</span> Chatear con el CEO</li>
+          <li><span class="check">✓</span> Crear / aprobar tareas</li>
+          <li><span class="check">✓</span> Crear y editar agentes</li>
+          <li><span class="check">✓</span> Configurar MCP y webhooks</li>
+          <li><span class="x">✕</span> No puede borrar la organización</li>
+        </ul>
+      </div>
+
+      <div class="card role-card member">
+        <div class="role-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        </div>
+        <h3>Member</h3>
+        <p class="meta">Visibilidad limitada. Pensado para colaboradores futuros que solo necesiten ver progreso.</p>
+        <ul class="role-perms">
+          <li><span class="check">✓</span> Ver proyectos asignados</li>
+          <li><span class="x">✕</span> No puede crear ni aprobar</li>
+          <li><span class="x">✕</span> No accede al chat del CEO</li>
+          <li style="color: var(--fg-soft); font-style: italic;">— rol futuro · v2 —</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px;">
+      <h3 style="margin-bottom: 16px;">Matriz de permisos</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Owner</th>
+            <th>Junta</th>
+            <th>Member</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Crear organización</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Eliminar organización</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Invitar miembros</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Crear proyectos</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Delegar tareas al CEO</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Aprobar tareas bloqueadas</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Crear / editar agentes</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+          <tr><td>Configurar MCP / webhooks</td><td style="color: var(--success);">✓</td><td style="color: var(--success);">✓</td><td style="color: var(--danger);">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============= UI PAGES ============= -->
+<a class="anchor" id="paginas"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">05 · Las páginas que vas a usar</span>
+      <h2>Cuatro pantallas. El 90% del trabajo pasa por ellas.</h2>
+      <p>Mockups simplificados. El detalle visual final ya está implementado en el design system Inteliside (Fraunces · Geist · teal sobre warm ivory/ink).</p>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="eyebrow">Pantalla principal</div>
+        <h3>Dashboard / Kanban + Chat</h3>
+        <p class="meta">A la izquierda el sidebar (organizaciones, navegación). En el centro el board. A la derecha el chat con el CEO. Todo a la vista, todo al alcance.</p>
+        <div class="diagram" style="margin-top: 16px; padding: 16px;">
+          <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="80" height="200" rx="6" fill="var(--bg-muted)" />
+            <rect x="10" y="14" width="60" height="8" rx="2" fill="var(--rule)" />
+            <rect x="10" y="32" width="40" height="6" rx="2" fill="var(--rule)" />
+            <rect x="10" y="48" width="50" height="6" rx="2" fill="var(--rule)" />
+            <rect x="10" y="62" width="44" height="6" rx="2" fill="var(--rule)" />
+
+            <rect x="90" y="0" width="200" height="200" rx="6" fill="var(--bg)" stroke="var(--rule)" />
+            <rect x="98" y="14" width="46" height="80" rx="4" fill="var(--bg-muted)" />
+            <rect x="148" y="14" width="46" height="80" rx="4" fill="var(--bg-muted)" />
+            <rect x="198" y="14" width="46" height="80" rx="4" fill="var(--bg-muted)" />
+            <rect x="248" y="14" width="38" height="80" rx="4" fill="var(--bg-muted)" />
+            <rect x="100" y="20" width="40" height="14" rx="2" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="150" y="20" width="40" height="14" rx="2" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="100" y="40" width="40" height="14" rx="2" fill="var(--bg)" stroke="var(--rule-soft)" />
+
+            <rect x="300" y="0" width="100" height="200" rx="6" fill="var(--bg-muted)" />
+            <rect x="310" y="14" width="80" height="8" rx="2" fill="var(--primary)" />
+            <rect x="310" y="32" width="60" height="6" rx="2" fill="var(--rule)" />
+            <rect x="310" y="46" width="70" height="6" rx="2" fill="var(--rule)" />
+            <rect x="310" y="180" width="80" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Pantalla de equipo</div>
+        <h3>Agentes</h3>
+        <p class="meta">Grid de cards con cada agente. Cada card muestra rol (CEO / C-Level / Worker), skills, MCP servers conectados y un toggle activo/inactivo.</p>
+        <div class="diagram" style="margin-top: 16px; padding: 16px;">
+          <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5" />
+            <circle cx="30" cy="30" r="10" fill="color-mix(in srgb, var(--primary) 20%, transparent)" />
+            <rect x="48" y="22" width="60" height="8" rx="2" fill="var(--fg)" opacity="0.8"/>
+            <rect x="48" y="36" width="40" height="5" rx="2" fill="var(--fg-soft)" opacity="0.5"/>
+            <rect x="20" y="60" width="44" height="14" rx="3" fill="color-mix(in srgb, var(--primary) 15%, transparent)" />
+
+            <rect x="140" y="10" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--rule)" />
+            <circle cx="160" cy="30" r="10" fill="var(--bg-muted)" />
+            <rect x="178" y="22" width="60" height="8" rx="2" fill="var(--fg)" opacity="0.8"/>
+            <rect x="178" y="36" width="40" height="5" rx="2" fill="var(--fg-soft)" opacity="0.5"/>
+
+            <rect x="270" y="10" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--rule)" />
+            <circle cx="290" cy="30" r="10" fill="var(--bg-muted)" />
+            <rect x="308" y="22" width="60" height="8" rx="2" fill="var(--fg)" opacity="0.8"/>
+            <rect x="308" y="36" width="40" height="5" rx="2" fill="var(--fg-soft)" opacity="0.5"/>
+
+            <rect x="10" y="105" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--rule)" />
+            <rect x="140" y="105" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--rule)" />
+            <rect x="270" y="105" width="120" height="80" rx="6" fill="var(--bg)" stroke="var(--rule)" stroke-dasharray="4 3" />
+            <text x="330" y="150" text-anchor="middle" font-family="Inter" font-size="14" fill="var(--fg-soft)">+ nuevo</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Pantalla de configuración</div>
+        <h3>Editor de Agente</h3>
+        <p class="meta">Dos columnas: básico (nombre, rol, SOUL.md, skills, tools) y avanzado (MCP servers, webhooks, integraciones API).</p>
+        <div class="diagram" style="margin-top: 16px; padding: 16px;">
+          <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="190" height="180" rx="6" fill="var(--bg-soft)" stroke="var(--rule)" />
+            <rect x="20" y="22" width="70" height="6" rx="2" fill="var(--fg-soft)" opacity="0.4" />
+            <rect x="20" y="38" width="170" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="20" y="64" width="170" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="20" y="92" width="170" height="50" rx="4" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="20" y="155" width="170" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+
+            <rect x="210" y="10" width="180" height="180" rx="6" fill="var(--bg-soft)" stroke="var(--rule)" />
+            <rect x="220" y="22" width="70" height="6" rx="2" fill="var(--fg-soft)" opacity="0.4" />
+            <rect x="220" y="38" width="160" height="22" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="226" y="46" width="6" height="6" rx="1" fill="var(--primary)" />
+            <rect x="220" y="68" width="160" height="22" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="226" y="76" width="6" height="6" rx="1" fill="var(--primary)" />
+            <rect x="220" y="98" width="160" height="22" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="220" y="135" width="160" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+            <rect x="220" y="160" width="160" height="14" rx="3" fill="var(--bg)" stroke="var(--rule-soft)" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Onboarding</div>
+        <h3>Crear organización</h3>
+        <p class="meta">Tres pasos rápidos: nombre + slug, objetivo principal, primer proyecto. Al final el CEO Agent se crea automáticamente y queda listo.</p>
+        <div class="diagram" style="margin-top: 16px; padding: 16px;">
+          <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="60" width="120" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--primary)" />
+            <text x="80" y="84" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">Paso 1</text>
+            <text x="80" y="104" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">Nombre &amp;</text>
+            <text x="80" y="118" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">slug</text>
+
+            <rect x="140" y="60" width="120" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" />
+            <text x="200" y="84" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">Paso 2</text>
+            <text x="200" y="104" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">Objetivo</text>
+            <text x="200" y="118" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">de la empresa</text>
+
+            <rect x="260" y="60" width="120" height="80" rx="8" fill="var(--bg-soft)" stroke="var(--rule)" />
+            <text x="320" y="84" text-anchor="middle" font-family="Fraunces" font-size="13" font-weight="600" fill="var(--fg)">Paso 3</text>
+            <text x="320" y="104" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">Primer</text>
+            <text x="320" y="118" text-anchor="middle" font-family="Inter" font-size="11" fill="var(--fg-soft)">proyecto</text>
+
+            <line x1="142" y1="100" x2="138" y2="100" stroke="var(--fg-soft)" />
+            <line x1="262" y1="100" x2="258" y2="100" stroke="var(--fg-soft)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ROADMAP ============= -->
+<a class="anchor" id="roadmap"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">06 · Roadmap</span>
+      <h2>Cuatro fases. ~13 semanas hasta producción.</h2>
+      <p>Las primeras dos fases son la columna vertebral; las dos últimas suman superpoderes y pulido.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="phase done">
+        <div class="phase-head">
+          <h3>Fase 1 — Base</h3>
+          <span class="phase-dur">4–6 semanas</span>
+          <span class="phase-status shipped">en progreso</span>
+        </div>
+        <ul>
+          <li>Setup Next.js · Better Auth · Postgres · Inteliside DS</li>
+          <li>CRUD organizaciones, proyectos, miembros</li>
+          <li>Integración Hermes Gateway API + CEO Profile</li>
+          <li>Kanban visual con drag &amp; drop + sincronización Hermes ↔ Postgres</li>
+          <li>Chat con CEO + tool calling</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <h3>Fase 2 — Equipo de agentes</h3>
+          <span class="phase-dur">3–4 semanas</span>
+          <span class="phase-status next">siguiente</span>
+        </div>
+        <ul>
+          <li>CRUD agentes con templates predefinidos (CEO, C-Level, Workers)</li>
+          <li>UI para configurar MCP servers y skills</li>
+          <li>Creación dinámica de Hermes profiles</li>
+          <li>Workers funcionales con tools y skills</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <h3>Fase 3 — Human-in-the-loop</h3>
+          <span class="phase-dur">2–3 semanas</span>
+          <span class="phase-status future">después</span>
+        </div>
+        <ul>
+          <li>Sistema de aprobaciones para tareas bloqueadas</li>
+          <li>Notificaciones in-app y por email</li>
+          <li>Webhooks salientes</li>
+          <li>Integraciones Telegram / Slack</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-head">
+          <h3>Fase 4 — Pulido y producción</h3>
+          <span class="phase-dur">2 semanas</span>
+          <span class="phase-status future">final</span>
+        </div>
+        <ul>
+          <li>Optimización SSE / WebSocket</li>
+          <li>Manejo robusto de errores</li>
+          <li>Suite E2E completa</li>
+          <li>Documentación + onboarding pulido + deploy</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= ACCEPTANCE CRITERIA ============= -->
+<a class="anchor" id="criterios"></a>
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">07 · Criterios de aceptación</span>
+      <h2>Por feature. Priorizados.</h2>
+      <p>
+        Cada barra muestra cuántos criterios <em>must have</em> (esenciales),
+        <em>should have</em> (importantes) y <em>nice to have</em> (deseables) hay
+        en cada feature. Total: 75 criterios.
+      </p>
+    </div>
+
+    <div class="ac-legend">
+      <span><i style="background: var(--primary);"></i> Must have · 52</span>
+      <span><i style="background: color-mix(in srgb, var(--primary) 50%, var(--bg-muted));"></i> Should have · 17</span>
+      <span><i style="background: color-mix(in srgb, var(--primary) 22%, var(--bg-muted));"></i> Nice to have · 6</span>
+    </div>
+
+    <div class="ac-grid">
+      <div class="ac-row">
+        <div class="ac-name">Autenticación</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 6;">6</div>
+          <div class="ac-should" style="flex: 2;">2</div>
+          <div class="ac-nice" style="flex: 1;">1</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Organización</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 7;">7</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Onboarding</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 7;">7</div>
+          <div class="ac-should" style="flex: 3;">3</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Kanban</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 6;">6</div>
+          <div class="ac-should" style="flex: 3;">3</div>
+          <div class="ac-nice" style="flex: 1;">1</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Chat con CEO</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 5;">5</div>
+          <div class="ac-should" style="flex: 2;">2</div>
+          <div class="ac-nice" style="flex: 1;">1</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Agentes</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 5;">5</div>
+          <div class="ac-should" style="flex: 2;">2</div>
+          <div class="ac-nice" style="flex: 2;">2</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Aprobaciones</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 7;">7</div>
+          <div class="ac-should" style="flex: 1;">1</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Webhooks</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 3;">3</div>
+          <div class="ac-should" style="flex: 2;">2</div>
+          <div class="ac-nice" style="flex: 1;">1</div>
+        </div>
+      </div>
+      <div class="ac-row">
+        <div class="ac-name">Sincronización</div>
+        <div class="ac-bar">
+          <div class="ac-must" style="flex: 6;">6</div>
+          <div class="ac-should" style="flex: 2;">2</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Cómo leer esto</div>
+      <p style="margin: 0; color: var(--fg-soft);">
+        Los <strong>must have</strong> son lo que hace falta para que el producto
+        funcione. Los <strong>should have</strong> mejoran la experiencia pero el
+        producto se sostiene sin ellos. Los <strong>nice to have</strong> son ideas
+        que vale la pena listar pero pueden esperar a una v2.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= METRICS ============= -->
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">08 · Métricas de éxito</span>
+      <h2>Cómo sabremos si está funcionando</h2>
+      <p>Si después de tres meses estos números están bien, el producto está sirviendo. Si no, ajustamos.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card metric">
+        <div class="metric-label">Tareas completadas / día</div>
+        <div class="metric-num">&gt; 10</div>
+        <div class="metric-target">por organización activa</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-label">Tiempo de bloqueo</div>
+        <div class="metric-num">&lt; 2h</div>
+        <div class="metric-target">desde que se bloquea hasta que se aprueba</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-label">Uptime Hermes Gateway</div>
+        <div class="metric-num">&gt; 99.5%</div>
+        <div class="metric-target">monitoreado por health checks</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-label">Latencia tiempo real</div>
+        <div class="metric-num">&lt; 100ms</div>
+        <div class="metric-target">desde evento hasta UI actualizada</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-label">NPS de usuarios</div>
+        <div class="metric-num">&gt; 50</div>
+        <div class="metric-target">encuesta trimestral</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= RISKS ============= -->
+<section class="block">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">09 · Riesgos</span>
+      <h2>Lo que nos puede salir mal — y cómo lo evitamos</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card risk">
+        <span class="risk-tag high">Impacto alto</span>
+        <h3 style="margin-top: 12px;">Inestabilidad de Hermes Gateway</h3>
+        <p class="meta"><strong>Probabilidad media.</strong> Mitigación: fallback a SQLite directo + retry con backoff exponencial.</p>
+      </div>
+      <div class="card risk">
+        <span class="risk-tag med">Impacto medio</span>
+        <h3 style="margin-top: 12px;">Sincronización fuera de fase</h3>
+        <p class="meta"><strong>Probabilidad media.</strong> Mitigación: health checks + reconciliación periódica + audit log.</p>
+      </div>
+      <div class="card risk">
+        <span class="risk-tag high">Impacto alto</span>
+        <h3 style="margin-top: 12px;">Sobrecarga de agentes simultáneos</h3>
+        <p class="meta"><strong>Probabilidad baja.</strong> Mitigación: rate limiting + queue del dispatcher.</p>
+      </div>
+      <div class="card risk">
+        <span class="risk-tag high">Impacto crítico</span>
+        <h3 style="margin-top: 12px;">Fuga de API keys de integraciones</h3>
+        <p class="meta"><strong>Probabilidad baja.</strong> Mitigación: encriptación at rest + rotación + audit trail.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= APPROVAL ============= -->
+<footer class="site">
+  <div class="container">
+    <span class="eyebrow">Aprobación pendiente</span>
+    <h2 style="margin-bottom: 12px;">Firmá si lo que leíste coincide con lo que tenés en mente.</h2>
+    <p style="color: var(--fg-soft); max-width: 60ch;">
+      Si algo te suena raro o falta, marcalo en la conversación. Esta versión queda
+      bloqueada hasta que tengamos las tres firmas.
+    </p>
+
+    <div class="approval">
+      <div class="approval-row">
+        <div class="approval-role">Product Owner</div>
+        <div style="margin: 8px 0 4px; font-family: 'Fraunces', serif;">Raul Camacho</div>
+        <div class="approval-line"></div>
+        <div style="color: var(--fg-soft); font-size: 0.78rem; margin-top: 6px;">Fecha · Firma</div>
+      </div>
+      <div class="approval-row">
+        <div class="approval-role">Tech Lead</div>
+        <div style="margin: 8px 0 4px; font-family: 'Fraunces', serif;">—</div>
+        <div class="approval-line"></div>
+        <div style="color: var(--fg-soft); font-size: 0.78rem; margin-top: 6px;">Fecha · Firma</div>
+      </div>
+      <div class="approval-row">
+        <div class="approval-role">Designer</div>
+        <div style="margin: 8px 0 4px; font-family: 'Fraunces', serif;">—</div>
+        <div class="approval-line"></div>
+        <div style="color: var(--fg-soft); font-size: 0.78rem; margin-top: 6px;">Fecha · Firma</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--rule-soft); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; color: var(--fg-soft); font-size: 0.85rem;">
+      <span>Hermes Multi-Agent Platform · PRD v1.0</span>
+      <span>Inteliside Studio · 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('themeToggle');
+    var html = document.documentElement;
+
+    function apply(theme) {
+      html.classList.remove('light', 'dark');
+      html.classList.add(theme);
+      btn.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+    }
+
+    var stored = localStorage.getItem('prd-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    apply(stored || (prefersDark ? 'dark' : 'light'));
+
+    btn.addEventListener('click', function () {
+      var next = html.classList.contains('dark') ? 'light' : 'dark';
+      localStorage.setItem('prd-theme', next);
+      apply(next);
+    });
+  }());
+</script>
+</body>
+</html>
