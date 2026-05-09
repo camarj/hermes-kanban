@@ -75,7 +75,6 @@ export class KanbanSync {
           updated++
         } else {
           if (!options?.dryRun) {
-            // Find or create a default project for this org
             let defaultProject = await prisma.project.findFirst({
               where: { orgId },
               orderBy: { createdAt: "asc" },
@@ -124,20 +123,30 @@ export class KanbanSync {
     if (!task) return { hermesTaskId: null, success: false }
     if (task.hermesTaskId) return { hermesTaskId: task.hermesTaskId, success: true }
 
+    const payload = JSON.stringify({
+      dbPath: this.dbPath,
+      title: task.title,
+      body: task.body ?? null,
+      assignee: task.assignee ?? null,
+      priority: task.priority ?? 0,
+      workspacePath: task.workspacePath ?? null,
+    })
+
     const pythonScript = `
 import sqlite3, json, sys, uuid
-conn = sqlite3.connect('${this.dbPath}')
+data = json.loads(sys.stdin.read())
+conn = sqlite3.connect(data['dbPath'])
 cursor = conn.cursor()
 task_id = str(uuid.uuid4())
-cursor.execute('''
-  INSERT INTO tasks (id, title, body, assignee, status, priority, workspace_kind, workspace_path, created_at)
-  VALUES (?, ?, ?, ?, 'triage', ?, 'scratch', ?, strftime('%s','now'))
-''', (task_id, '${this.escapeSql(task.title)}', ${task.body ? `'${this.escapeSql(task.body)}'` : "None"}, ${task.assignee ? `'${this.escapeSql(task.assignee)}'` : "None"}, ${task.priority ?? 0}, ${task.workspacePath ? `'${this.escapeSql(task.workspacePath)}'` : "None"}))
+cursor.execute(
+    "INSERT INTO tasks (id, title, body, assignee, status, priority, workspace_kind, workspace_path, created_at) VALUES (?, ?, ?, ?, 'triage', ?, 'scratch', ?, strftime('%s','now'))",
+    (task_id, data['title'], data['body'], data['assignee'], data['priority'], data['workspacePath'])
+)
 conn.commit()
 conn.close()
 print(json.dumps({"id": task_id}))
 `
-    const result = await this.execInContainer(`python3 -c "${pythonScript}"`)
+    const result = await this.execInContainer(["python3", "-c", pythonScript], payload)
     if (!result) return { hermesTaskId: null, success: false }
 
     try {
@@ -163,16 +172,33 @@ print(json.dumps({"id": task_id}))
       case "archive": status = "archived"; break
     }
 
+    const payload = JSON.stringify({
+      dbPath: this.dbPath,
+      taskId: hermesTaskId,
+      status,
+      result: resultCol,
+    })
+
     const pythonScript = `
-import sqlite3
-conn = sqlite3.connect('${this.dbPath}')
+import sqlite3, json, sys
+data = json.loads(sys.stdin.read())
+conn = sqlite3.connect(data['dbPath'])
 cursor = conn.cursor()
-${resultCol ? `cursor.execute("UPDATE tasks SET status = ?, completed_at = strftime('%s','now'), result = ? WHERE id = ?", ('${status}', '${this.escapeSql(resultCol)}', '${hermesTaskId}'))` : `cursor.execute("UPDATE tasks SET status = ? WHERE id = ?", ('${status}', '${hermesTaskId}'))`}
+if data['result'] is not None:
+    cursor.execute(
+        "UPDATE tasks SET status = ?, completed_at = strftime('%s','now'), result = ? WHERE id = ?",
+        (data['status'], data['result'], data['taskId'])
+    )
+else:
+    cursor.execute(
+        "UPDATE tasks SET status = ? WHERE id = ?",
+        (data['status'], data['taskId'])
+    )
 conn.commit()
 conn.close()
 print('ok')
 `
-    const result = await this.execInContainer(`python3 -c "${pythonScript}"`)
+    const result = await this.execInContainer(["python3", "-c", pythonScript], payload)
     return result === "ok"
   }
 
@@ -187,14 +213,30 @@ print('ok')
    * Initialize the kanban.db if it doesn't exist.
    */
   async initKanban(): Promise<boolean> {
-    const result = await this.execInContainer(`python3 -c "import sqlite3; conn = sqlite3.connect('${this.dbPath}'); cursor = conn.cursor(); cursor.execute('CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT NOT NULL, body TEXT, assignee TEXT, status TEXT NOT NULL DEFAULT \"triage\", priority INTEGER DEFAULT 0, created_by TEXT, created_at INTEGER NOT NULL, started_at INTEGER, completed_at INTEGER, workspace_kind TEXT NOT NULL DEFAULT \"scratch\", workspace_path TEXT, claim_lock TEXT, claim_expires INTEGER, tenant TEXT, result TEXT, idempotency_key TEXT, consecutive_failures INTEGER DEFAULT 0, worker_pid INTEGER, last_failure_error TEXT, max_runtime_seconds INTEGER, last_heartbeat_at INTEGER, current_run_id INTEGER, workflow_template_id TEXT, current_step_key TEXT, skills TEXT)'); cursor.execute('CREATE TABLE IF NOT EXISTS task_links (parent_id TEXT, child_id TEXT, PRIMARY KEY (parent_id, child_id))'); cursor.execute('CREATE TABLE IF NOT EXISTS task_comments (id INTEGER PRIMARY KEY AUTOINCREMENT, task_id TEXT NOT NULL, body TEXT NOT NULL, created_at INTEGER NOT NULL)'); cursor.execute('CREATE TABLE IF NOT EXISTS task_events (id INTEGER PRIMARY KEY AUTOINCREMENT, task_id TEXT NOT NULL, event_type TEXT NOT NULL, payload TEXT, created_at INTEGER NOT NULL)'); conn.commit(); conn.close(); print('ok')"`)
+    const payload = JSON.stringify({ dbPath: this.dbPath })
+    const pythonScript = `
+import sqlite3, json, sys
+data = json.loads(sys.stdin.read())
+conn = sqlite3.connect(data['dbPath'])
+cursor = conn.cursor()
+cursor.execute('CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT NOT NULL, body TEXT, assignee TEXT, status TEXT NOT NULL DEFAULT "triage", priority INTEGER DEFAULT 0, created_by TEXT, created_at INTEGER NOT NULL, started_at INTEGER, completed_at INTEGER, workspace_kind TEXT NOT NULL DEFAULT "scratch", workspace_path TEXT, claim_lock TEXT, claim_expires INTEGER, tenant TEXT, result TEXT, idempotency_key TEXT, consecutive_failures INTEGER DEFAULT 0, worker_pid INTEGER, last_failure_error TEXT, max_runtime_seconds INTEGER, last_heartbeat_at INTEGER, current_run_id INTEGER, workflow_template_id TEXT, current_step_key TEXT, skills TEXT)')
+cursor.execute('CREATE TABLE IF NOT EXISTS task_links (parent_id TEXT, child_id TEXT, PRIMARY KEY (parent_id, child_id))')
+cursor.execute('CREATE TABLE IF NOT EXISTS task_comments (id INTEGER PRIMARY KEY AUTOINCREMENT, task_id TEXT NOT NULL, body TEXT NOT NULL, created_at INTEGER NOT NULL)')
+cursor.execute('CREATE TABLE IF NOT EXISTS task_events (id INTEGER PRIMARY KEY AUTOINCREMENT, task_id TEXT NOT NULL, event_type TEXT NOT NULL, payload TEXT, created_at INTEGER NOT NULL)')
+conn.commit()
+conn.close()
+print('ok')
+`
+    const result = await this.execInContainer(["python3", "-c", pythonScript], payload)
     return result === "ok"
   }
 
   private async fetchHermesTasks(): Promise<KanbanTask[]> {
+    const payload = JSON.stringify({ dbPath: this.dbPath })
     const pythonScript = `
-import sqlite3, json
-conn = sqlite3.connect('${this.dbPath}')
+import sqlite3, json, sys
+data = json.loads(sys.stdin.read())
+conn = sqlite3.connect(data['dbPath'])
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 cursor.execute('SELECT id, title, body, assignee, status, priority, workspace_kind, workspace_path, tenant, result, created_at, completed_at FROM tasks ORDER BY created_at DESC')
@@ -221,7 +263,7 @@ for row in rows:
 conn.close()
 print(json.dumps(tasks))
 `
-    const output = await this.execInContainer(`python3 -c "${pythonScript}"`)
+    const output = await this.execInContainer(["python3", "-c", pythonScript], payload)
     if (!output) return []
     try {
       return JSON.parse(output)
@@ -231,30 +273,43 @@ print(json.dumps(tasks))
     }
   }
 
-  private async execInContainer(command: string): Promise<string | null> {
+  /**
+   * Run a command inside the Hermes Gateway container with stdin payload.
+   * Uses spawn with an args array to avoid shell interpretation; values flow
+   * through stdin as JSON so Python can json.loads them and pass to parametrized
+   * SQL — no string interpolation across shell/Python/SQL layers.
+   */
+  private async execInContainer(args: string[], stdin?: string): Promise<string | null> {
     try {
-      const { exec } = await import("child_process")
+      const { spawn } = await import("child_process")
       return new Promise((resolve) => {
-        exec(
-          `docker exec ${this.containerName} sh -c '${command}'`,
-          { timeout: 30000 },
-          (error, stdout, stderr) => {
-            if (error) {
-              console.error("Docker exec error:", error.message, stderr)
-              resolve(null)
-            } else {
-              resolve(stdout.trim())
-            }
-          },
-        )
+        const proc = spawn("docker", ["exec", "-i", this.containerName, ...args], {
+          timeout: 30000,
+        })
+        let stdout = ""
+        let stderr = ""
+        proc.stdout.on("data", (d: Buffer) => { stdout += d.toString() })
+        proc.stderr.on("data", (d: Buffer) => { stderr += d.toString() })
+        proc.on("error", (err) => {
+          console.error("Docker exec error:", err.message, stderr)
+          resolve(null)
+        })
+        proc.on("close", (code) => {
+          if (code !== 0) {
+            console.error(`Docker exec exited with code ${code}:`, stderr)
+            resolve(null)
+          } else {
+            resolve(stdout.trim())
+          }
+        })
+        if (stdin) {
+          proc.stdin.write(stdin)
+        }
+        proc.stdin.end()
       })
     } catch {
       return null
     }
-  }
-
-  private escapeSql(str: string): string {
-    return str.replace(/'/g, "''").replace(/\\/g, "\\\\")
   }
 }
 
