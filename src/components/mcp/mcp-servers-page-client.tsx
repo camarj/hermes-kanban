@@ -20,9 +20,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Plus, Plug, RefreshCw, Pencil, Trash2 } from "lucide-react"
+import { Plus, Plug, RefreshCw, Pencil, Trash2, Zap, CheckCircle2, XCircle, Info } from "lucide-react"
 import { McpServerForm } from "@/components/mcp/mcp-server-form"
 import type { McpInput } from "@/lib/mcp/queries"
+import type { McpTestResult } from "@/lib/mcp/test-connection"
 
 interface McpServerRow {
   id: string
@@ -48,6 +49,8 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
   const [editing, setEditing] = useState<McpServerRow | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<McpServerRow | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [testing, setTesting] = useState<string | null>(null)
+  const [testResults, setTestResults] = useState<Record<string, McpTestResult>>({})
 
   async function fetchServers() {
     setIsLoading(true)
@@ -120,6 +123,34 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
       await fetchServers()
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  async function handleTest(server: McpServerRow) {
+    setTesting(server.id)
+    try {
+      const r = await fetch(`/api/organizations/${orgId}/mcp-servers/${server.id}/test`, {
+        method: "POST",
+      })
+      const data = await r.json()
+      if (!r.ok) {
+        setTestResults((prev) => ({
+          ...prev,
+          [server.id]: { ok: false, error: data.error || "Test failed" },
+        }))
+        return
+      }
+      setTestResults((prev) => ({ ...prev, [server.id]: data.result }))
+    } catch (err) {
+      setTestResults((prev) => ({
+        ...prev,
+        [server.id]: {
+          ok: false,
+          error: err instanceof Error ? err.message : "Test failed",
+        },
+      }))
+    } finally {
+      setTesting(null)
     }
   }
 
@@ -236,6 +267,16 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => handleTest(server)}
+                    aria-label="Test connection"
+                    disabled={testing === server.id}
+                    title="Test connection"
+                  >
+                    <Zap className={`h-4 w-4 ${testing === server.id ? "animate-pulse text-primary" : ""}`} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setEditing(server)}
                     aria-label="Edit"
                   >
@@ -252,6 +293,33 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
                   </Button>
                 </div>
               </div>
+              {testResults[server.id] && (() => {
+                const result = testResults[server.id]
+                return (
+                  <div className="mt-3 ml-11 flex items-start gap-2 text-xs">
+                    {result.ok ? (
+                      <>
+                        <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0 mt-0.5" />
+                        <span className="text-success">
+                          Connected ({result.statusCode}, {result.latencyMs}ms)
+                        </span>
+                      </>
+                    ) : result.notSupported ? (
+                      <>
+                        <Info className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{result.error}</span>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="h-3.5 w-3.5 text-destructive flex-shrink-0 mt-0.5" />
+                        <span className="text-destructive break-all">
+                          {result.error || `HTTP ${result.statusCode}`}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
           ))}
         </div>

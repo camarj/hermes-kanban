@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Plus, X, Bot, Cpu, Zap, AlertCircle, CheckCircle2 } from "lucide-react"
 import { TemplatePicker } from "@/components/agents/template-picker"
+import { McpServerSelector, type McpServerOption } from "@/components/mcp/mcp-server-selector"
 import type { TemplateOption } from "@/lib/agents/list-templates"
 import { C_LEVEL_ROLES } from "@/lib/agents/types"
 
@@ -63,6 +64,8 @@ export function CreateAgentDialog({
   const [skills, setSkills] = useState<string[]>([])
   const [newSkill, setNewSkill] = useState("")
   const [createHermesProfile, setCreateHermesProfile] = useState(true)
+  const [mcpServers, setMcpServers] = useState<McpServerOption[]>([])
+  const [selectedMcpIds, setSelectedMcpIds] = useState<string[]>([])
 
   useEffect(() => {
     if (!open) return
@@ -92,6 +95,36 @@ export function CreateAgentDialog({
     }
   }, [open, orgId])
 
+  useEffect(() => {
+    if (!open) return
+    let cancelled = false
+    const loadMcp = async () => {
+      try {
+        const r = await fetch(`/api/organizations/${orgId}/mcp-servers`)
+        const data = await r.json()
+        if (!cancelled && Array.isArray(data?.servers)) {
+          setMcpServers(
+            data.servers.map((s: McpServerOption) => ({
+              id: s.id,
+              name: s.name,
+              transport: s.transport,
+              command: s.command,
+              url: s.url,
+              envVars: s.envVars ?? {},
+              toolsFilter: s.toolsFilter ?? [],
+            }))
+          )
+        }
+      } catch {
+        // ignore — selector will render empty state with link
+      }
+    }
+    loadMcp()
+    return () => {
+      cancelled = true
+    }
+  }, [open, orgId])
+
   function resetForm() {
     setStep("level")
     setRoleType("worker")
@@ -101,6 +134,7 @@ export function CreateAgentDialog({
     setSoulContent("")
     setSkills([])
     setNewSkill("")
+    setSelectedMcpIds([])
     setCreateHermesProfile(true)
     setError(null)
   }
@@ -156,6 +190,17 @@ export function CreateAgentDialog({
     setIsLoading(true)
     setError(null)
 
+    const selectedServers = mcpServers
+      .filter((s) => selectedMcpIds.includes(s.id))
+      .map((s) => ({
+        name: s.name,
+        transport: s.transport,
+        command: s.command || undefined,
+        url: s.url || undefined,
+        env: s.envVars,
+        tools_filter: s.toolsFilter,
+      }))
+
     try {
       const response = await fetch(`/api/organizations/${orgId}/agents`, {
         method: "POST",
@@ -168,6 +213,7 @@ export function CreateAgentDialog({
           tools: selectedTemplate.defaultTools,
           toolsets: selectedTemplate.defaultToolsets,
           roleType: selectedTemplate.roleType,
+          mcpServers: selectedServers.length > 0 ? selectedServers : undefined,
           cLevelRole: selectedTemplate.cLevelRole,
           specialization: selectedTemplate.specialization,
           templateId: selectedTemplate.source === "db" ? selectedTemplate.id : undefined,
@@ -387,6 +433,19 @@ export function CreateAgentDialog({
                         ))}
                       </div>
                     )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>MCP Servers (optional)</Label>
+                    <McpServerSelector
+                      servers={mcpServers}
+                      selectedIds={selectedMcpIds}
+                      onChange={setSelectedMcpIds}
+                      orgSlug={orgSlug}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Tools from selected MCP servers will be available to this worker.
+                    </p>
                   </div>
                 </>
               )}
