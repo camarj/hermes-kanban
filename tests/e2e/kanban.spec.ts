@@ -95,6 +95,45 @@ test.describe('Kanban Board', () => {
     await expect(page.getByTestId('task-card').filter({ hasText: 'Task to Delete' }).first()).not.toBeVisible({ timeout: 10000 })
   })
 
+  test('should drag task between columns and persist after reload', async ({ page }) => {
+    const taskTitle = `Drag Test ${Date.now()}`
+
+    await page.getByRole('button', { name: /add task/i }).click()
+    const createDialog = page.getByRole('dialog')
+    await expect(createDialog).toBeVisible()
+    await createDialog.getByLabel(/title/i).fill(taskTitle)
+    await createDialog.getByRole('button', { name: /create task/i }).click()
+    await expect(createDialog).not.toBeVisible({ timeout: 10000 })
+
+    const triageColumn = page.getByTestId('kanban-column-triage')
+    const todoColumn = page.getByTestId('kanban-column-todo')
+    const card = page.getByTestId('task-card').filter({ hasText: taskTitle }).first()
+    await expect(card).toBeVisible({ timeout: 5000 })
+    await expect(triageColumn.getByTestId('task-card').filter({ hasText: taskTitle })).toBeVisible()
+
+    const cardBox = await card.boundingBox()
+    const todoBox = await todoColumn.boundingBox()
+    if (!cardBox || !todoBox) throw new Error('Card or column not laid out')
+
+    // dnd-kit pointer activation requires explicit small movement before commit
+    await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(cardBox.x + cardBox.width / 2 + 10, cardBox.y + cardBox.height / 2 + 10, { steps: 5 })
+    await page.mouse.move(todoBox.x + todoBox.width / 2, todoBox.y + todoBox.height / 2 + 80, { steps: 10 })
+    await page.mouse.up()
+
+    // Card should now be inside the To Do column
+    await expect(
+      todoColumn.getByTestId('task-card').filter({ hasText: taskTitle })
+    ).toBeVisible({ timeout: 5000 })
+
+    // Persistence: reload and check still in To Do
+    await page.reload()
+    await expect(
+      page.getByTestId('kanban-column-todo').getByTestId('task-card').filter({ hasText: taskTitle })
+    ).toBeVisible({ timeout: 10000 })
+  })
+
   test('should assign agent to new task', async ({ page }) => {
     await page.getByRole('button', { name: /add task/i }).click()
     

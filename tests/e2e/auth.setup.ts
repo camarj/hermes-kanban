@@ -17,7 +17,7 @@ auth('authenticate', async ({ page }) => {
   
   await page.waitForURL('/onboarding/create-organization', { timeout: 15000 })
   
-  await page.getByLabel(/organization name/i).fill('Acme Corporation')
+  await page.getByLabel(/organization name/i).fill('Acme Corp')
   await page.getByLabel(/objective/i).fill('E2E testing organization')
   
   await page.getByRole('button', { name: /create organization/i }).click()
