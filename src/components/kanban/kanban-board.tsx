@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/core"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Plus, RefreshCw } from "lucide-react"
+import { Plus, RefreshCw, Archive } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTasks } from "@/hooks/use-tasks"
 import { useTasksSSE } from "@/hooks/use-tasks-sse"
@@ -42,6 +42,9 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showArchive, setShowArchive] = useState(false)
+  const visibleColumns = showArchive ? COLUMNS : COLUMNS.filter((c) => c.id !== "archived")
+  const archivedCount = tasks.filter((t) => t.status === "archived").length
 
   useTasksSSE(
     orgId,
@@ -132,6 +135,21 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setShowArchive((v) => !v)}
+              className={`border-border ${showArchive ? "text-foreground" : "text-muted-foreground"}`}
+              data-testid="toggle-archive"
+            >
+              <Archive className="h-4 w-4 mr-1" />
+              {showArchive ? "Ocultar archivadas" : "Ver archivadas"}
+              {!showArchive && archivedCount > 0 && (
+                <span className="ml-1 rounded-full bg-muted px-1.5 text-xs text-muted-foreground">
+                  {archivedCount}
+                </span>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleSync}
               disabled={isSyncing}
               className="border-border text-muted-foreground"
@@ -152,7 +170,7 @@ export function KanbanBoard({ orgId, agents }: KanbanBoardProps) {
 
         <div className="flex-1 overflow-x-auto p-6 bg-background">
           <div className="flex gap-4 h-full min-w-max">
-            {COLUMNS.map((column) => (
+            {visibleColumns.map((column) => (
               <KanbanColumn
                 key={column.id}
                 id={column.id}

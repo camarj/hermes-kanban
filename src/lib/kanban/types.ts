@@ -58,6 +58,7 @@ export const COLUMNS: { id: TaskStatus; label: string; color: string }[] = [
   { id: "running", label: "Running", color: "#F59E0B" },
   { id: "blocked", label: "Blocked", color: "#EF4444" },
   { id: "done", label: "Done", color: "#10B981" },
+  { id: "archived", label: "Archive", color: "#6B6560" },
 ]
 
 export const PRIORITY_LABELS: Record<number, string> = {
