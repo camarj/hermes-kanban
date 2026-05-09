@@ -34,6 +34,7 @@ model User {
   blockedTasks       Task[]              @relation("TaskBlockedBy")
   taskComments       TaskComment[]
   notifications      Notification[]
+  conversations      Conversation[]
 
   @@map("users")
 }
@@ -104,6 +105,7 @@ model Organization {
   templates   AgentTemplate[]
   mcpServers  McpServer[]
   notifications Notification[]
+  conversations Conversation[]
 
   @@map("organizations")
 }
@@ -281,6 +283,7 @@ model Agent {
   // Relations
   organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
   template     AgentTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  conversations Conversation[]
 
   @@map("agents")
 }
@@ -345,4 +348,40 @@ model WebhookEvent {
   createdAt  DateTime @default(now())
 
   @@map("webhook_events")
+}
+
+// ============================================
+// CHAT CONVERSATIONS
+// ============================================
+
+model Conversation {
+  id        String   @id @default(cuid())
+  orgId     String
+  userId    String
+  agentId   String
+  profile   String
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agent        Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  messages     ChatMessage[]
+
+  @@map("conversations")
+}
+
+model ChatMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String   // "user" | "assistant" | "system"
+  content        String   @db.Text
+  createdAt      DateTime @default(now())
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
 }
