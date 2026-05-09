@@ -59,28 +59,24 @@ export async function POST(req: NextRequest) {
         }
       })
 
-      const existingTemplate = await tx.agentTemplate.findFirst({
-        where: { name: CEO_TEMPLATE.name, orgId: org.id }
+      const ceoTemplate = await tx.agentTemplate.upsert({
+        where: { orgId_name: { orgId: org.id, name: CEO_TEMPLATE.name } },
+        update: {},
+        create: {
+          orgId: org.id,
+          name: CEO_TEMPLATE.name,
+          displayName: CEO_TEMPLATE.displayName,
+          description: CEO_TEMPLATE.description,
+          roleType: CEO_TEMPLATE.roleType,
+          soulContent: null,
+          defaultSkills: CEO_TEMPLATE.defaultSkills,
+          defaultTools: CEO_TEMPLATE.defaultTools,
+          defaultToolsets: CEO_TEMPLATE.defaultToolsets,
+          isPublic: CEO_TEMPLATE.isPublic,
+        },
       })
 
-      if (!existingTemplate) {
-        await tx.agentTemplate.create({
-          data: {
-            orgId: org.id,
-            name: CEO_TEMPLATE.name,
-            displayName: CEO_TEMPLATE.displayName,
-            description: CEO_TEMPLATE.description,
-            roleType: CEO_TEMPLATE.roleType,
-            soulContent: null,
-            defaultSkills: CEO_TEMPLATE.defaultSkills,
-            defaultTools: CEO_TEMPLATE.defaultTools,
-            defaultToolsets: CEO_TEMPLATE.defaultToolsets,
-            isPublic: CEO_TEMPLATE.isPublic,
-          }
-        })
-      }
-
-      const ceoTemplateId = existingTemplate?.id
+      const ceoTemplateId = ceoTemplate.id
 
       const ceoProfileName = `ceo-${slug}`
       const agent = await tx.agent.create({

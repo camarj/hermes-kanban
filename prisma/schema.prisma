@@ -256,6 +256,7 @@ model AgentTemplate {
   organization Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
   agents       Agent[]
 
+  @@unique([orgId, name])
   @@map("agent_templates")
 }
 
