@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { getUserOrganizations } from "@/lib/organization/helpers"
 
 export async function getSession() {
   return await auth.api.getSession({
@@ -19,6 +20,10 @@ export async function requireAuth() {
 export async function requireNoAuth() {
   const session = await getSession()
   if (session) {
-    redirect("/dashboard")
+    const organizations = await getUserOrganizations(session.user.id)
+    if (organizations.length > 0) {
+      redirect(`/${organizations[0].slug}`)
+    }
+    redirect("/onboarding/create-organization")
   }
 }

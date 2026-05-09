@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { authClient } from "@/lib/auth/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from "next/link"
 
 export function RegisterForm() {
-  const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -21,49 +20,35 @@ export function RegisterForm() {
     setIsLoading(true)
     setError("")
 
-    try {
-      const response = await fetch("/api/auth/sign-up/email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
-      })
+    const result = await authClient.signUp.email({
+      email,
+      password,
+      name,
+    })
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || "Failed to sign up")
-      }
-
-      router.push("/dashboard")
-      router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
-    } finally {
+    if (result.error) {
+      setError(result.error.message || "Failed to sign up")
       setIsLoading(false)
+      return
     }
+
+    window.location.href = "/onboarding/create-organization"
   }
 
   async function signInWithGoogle() {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/auth/sign-in/social", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          provider: "google",
-          callbackURL: "/dashboard"
-        }),
+      const result = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to sign in with Google")
+      if (result.error) {
+        setError("Failed to sign in with Google")
+        setIsLoading(false)
       }
-
-      const data = await response.json()
-      if (data.url) {
-        window.location.href = data.url
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+} catch {
+      setError("Failed to sign in with Google")
       setIsLoading(false)
     }
   }

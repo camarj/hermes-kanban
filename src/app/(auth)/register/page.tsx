@@ -1,6 +1,9 @@
+import { requireNoAuth } from "@/lib/auth/session"
 import { RegisterForm } from "@/components/auth/register-form"
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  await requireNoAuth()
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F1EB] px-4">
       <div className="w-full max-w-md">
