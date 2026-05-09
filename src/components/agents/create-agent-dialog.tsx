@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Plus, X, Bot, Cpu, Search, Code, Palette, Zap, AlertCircle, CheckCircle2, DollarSign, BarChart3, Megaphone, Settings, Users } from "lucide-react"
-import { C_LEVEL_ROLES, WORKER_SPECIALIZATIONS, type CLevelRole, type WorkerSpecialization } from "@/lib/agents/types"
+import { Plus, X, Bot, Cpu, Zap, AlertCircle, CheckCircle2 } from "lucide-react"
+import { TemplatePicker } from "@/components/agents/template-picker"
+import type { TemplateOption } from "@/lib/agents/list-templates"
+import { C_LEVEL_ROLES } from "@/lib/agents/types"
 
 type RoleType = "ceo" | "c-level" | "worker"
 
@@ -36,30 +38,6 @@ const ROLE_LEVEL_INFO: Record<RoleType, { label: string; description: string; co
   worker: { label: "Specialist", description: "Executes specific tasks — coding, analysis, content, etc.", color: "#6B6560" },
 }
 
-const C_LEVEL_ICONS: Record<CLevelRole, React.ReactNode> = {
-  cto: <Code className="h-4 w-4" />,
-  cfo: <DollarSign className="h-4 w-4" />,
-  cmo: <Megaphone className="h-4 w-4" />,
-  coo: <Settings className="h-4 w-4" />,
-}
-
-const WORKER_ICONS: Record<WorkerSpecialization, React.ReactNode> = {
-  "backend-engineer": <Code className="h-4 w-4" />,
-  "frontend-engineer": <Palette className="h-4 w-4" />,
-  "devops-engineer": <Cpu className="h-4 w-4" />,
-  "qa-engineer": <Search className="h-4 w-4" />,
-  "financial-analyst": <DollarSign className="h-4 w-4" />,
-  "data-analyst": <BarChart3 className="h-4 w-4" />,
-  "content-strategist": <Palette className="h-4 w-4" />,
-  "seo-specialist": <Search className="h-4 w-4" />,
-  "social-media-manager": <Megaphone className="h-4 w-4" />,
-  "project-manager": <Users className="h-4 w-4" />,
-  "process-analyst": <BarChart3 className="h-4 w-4" />,
-  "general": <Zap className="h-4 w-4" />,
-}
-
-const WORKER_DEPARTMENT_ORDER: string[] = ["technology", "finance", "marketing", "operations"]
-
 export function CreateAgentDialog({
   orgId,
   orgSlug,
@@ -71,12 +49,13 @@ export function CreateAgentDialog({
   hasCeoAgent = false,
 }: CreateAgentDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [step, setStep] = useState<"level" | "role" | "details">("level")
+  const [step, setStep] = useState<"level" | "template" | "details">("level")
   const [error, setError] = useState<string | null>(null)
 
   const [roleType, setRoleType] = useState<RoleType>("worker")
-  const [cLevelRole, setCLevelRole] = useState<CLevelRole>("cto")
-  const [specialization, setSpecialization] = useState<WorkerSpecialization>("general")
+  const [templates, setTemplates] = useState<TemplateOption[]>([])
+  const [templatesLoading, setTemplatesLoading] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateOption | null>(null)
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -85,11 +64,38 @@ export function CreateAgentDialog({
   const [newSkill, setNewSkill] = useState("")
   const [createHermesProfile, setCreateHermesProfile] = useState(true)
 
+  useEffect(() => {
+    if (!open) return
+    let cancelled = false
+    const loadTemplates = async () => {
+      setTemplatesLoading(true)
+      try {
+        const r = await fetch(`/api/organizations/${orgId}/agent-templates`)
+        const data = await r.json()
+        if (!cancelled && data?.templates) {
+          const all = [
+            ...data.templates.ceo,
+            ...data.templates.cLevel,
+            ...data.templates.worker,
+          ] as TemplateOption[]
+          setTemplates(all)
+        }
+      } catch {
+        // fetch failed — keep empty list, error surfaces on submit
+      } finally {
+        if (!cancelled) setTemplatesLoading(false)
+      }
+    }
+    loadTemplates()
+    return () => {
+      cancelled = true
+    }
+  }, [open, orgId])
+
   function resetForm() {
     setStep("level")
     setRoleType("worker")
-    setCLevelRole("cto")
-    setSpecialization("general")
+    setSelectedTemplate(null)
     setName("")
     setDescription("")
     setSoulContent("")
@@ -99,31 +105,36 @@ export function CreateAgentDialog({
     setError(null)
   }
 
+  function applyTemplate(tpl: TemplateOption) {
+    setSelectedTemplate(tpl)
+    setName(tpl.displayName)
+    setDescription(`${tpl.description} for ${orgName}`)
+    setSkills(tpl.defaultSkills)
+    setSoulContent("")
+  }
+
   function handleLevelNext() {
     if (roleType === "ceo" && hasCeoAgent) {
       setError("This organization already has a CEO agent")
       return
     }
-    if (roleType === "ceo") {
-      setName("CEO Agent")
-      setDescription(`Chief Executive Agent for ${orgName}`)
+    setError(null)
+    const ceoTemplate = templates.find((t) => t.roleType === "ceo")
+    if (roleType === "ceo" && ceoTemplate) {
+      applyTemplate(ceoTemplate)
       setStep("details")
     } else {
-      setStep("role")
+      setSelectedTemplate(null)
+      setStep("template")
     }
   }
 
-  function handleRoleNext() {
-    if (roleType === "c-level") {
-      const clevelInfo = C_LEVEL_ROLES[cLevelRole]
-      setName(`${clevelInfo.label} Agent`)
-      setDescription(`${clevelInfo.description} for ${orgName}`)
-    } else {
-      const specInfo = WORKER_SPECIALIZATIONS[specialization]
-      if (specInfo) {
-        setName(specInfo.label)
-      }
+  function handleTemplateNext() {
+    if (!selectedTemplate) {
+      setError("Select a template to continue")
+      return
     }
+    setError(null)
     setStep("details")
   }
 
@@ -140,7 +151,7 @@ export function CreateAgentDialog({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) return
+    if (!name.trim() || !selectedTemplate) return
 
     setIsLoading(true)
     setError(null)
@@ -154,9 +165,12 @@ export function CreateAgentDialog({
           description: description.trim() || undefined,
           soulContent: soulContent.trim() || undefined,
           skills,
-          roleType,
-          cLevelRole: roleType === "c-level" ? cLevelRole : undefined,
-          specialization: roleType === "worker" ? specialization : undefined,
+          tools: selectedTemplate.defaultTools,
+          toolsets: selectedTemplate.defaultToolsets,
+          roleType: selectedTemplate.roleType,
+          cLevelRole: selectedTemplate.cLevelRole,
+          specialization: selectedTemplate.specialization,
+          templateId: selectedTemplate.source === "db" ? selectedTemplate.id : undefined,
           createHermesProfile,
           isActive: true,
         }),
@@ -183,20 +197,16 @@ export function CreateAgentDialog({
   }
 
   const getProfilePreview = () => {
-    if (roleType === "ceo") return `ceo-${orgSlug}`
-    if (roleType === "c-level") return `clevel-${orgSlug}-${name.toLowerCase().replace(/\s+/g, "-")}`
+    if (!selectedTemplate) return ""
+    if (selectedTemplate.roleType === "ceo") return `ceo-${orgSlug}`
+    if (selectedTemplate.roleType === "c-level")
+      return `clevel-${orgSlug}-${name.toLowerCase().replace(/\s+/g, "-")}`
     return `worker-${orgSlug}-${name.toLowerCase().replace(/\s+/g, "-")}`
   }
 
-  const workersByDepartment = WORKER_DEPARTMENT_ORDER.map((dept) => ({
-    department: dept,
-    label: dept.charAt(0).toUpperCase() + dept.slice(1),
-    specializations: Object.entries(WORKER_SPECIALIZATIONS).filter(([, v]) => v.department === dept),
-  })).filter((g) => g.specializations.length > 0)
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-card max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[640px] bg-card max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="font-serif flex items-center gap-2">
@@ -206,8 +216,8 @@ export function CreateAgentDialog({
             <DialogDescription className="text-muted-foreground">
               {step === "level"
                 ? "Choose the level in the organization"
-                : step === "role"
-                  ? "Select the specific role"
+                : step === "template"
+                  ? "Select a template to start from"
                   : "Configure your agent"}
             </DialogDescription>
           </DialogHeader>
@@ -233,7 +243,7 @@ export function CreateAgentDialog({
                       onClick={() => setRoleType(level)}
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
                         roleType === level
-                          ? `border-[${info.color}] bg-[${info.color}]/5`
+                          ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
@@ -271,74 +281,39 @@ export function CreateAgentDialog({
             </div>
           )}
 
-          {step === "role" && roleType === "c-level" && (
-            <div className="py-6 space-y-4">
-              <Label className="text-base font-medium">Select C-Level Role</Label>
-              <div className="grid grid-cols-2 gap-3">
-                {(Object.entries(C_LEVEL_ROLES) as [CLevelRole, typeof C_LEVEL_ROLES[CLevelRole]][]).map(([role, info]) => (
-                  <button
-                    key={role}
-                    type="button"
-                    onClick={() => setCLevelRole(role)}
-                    className={`p-4 rounded-lg border-2 text-left transition-all ${
-                      cLevelRole === role
-                        ? "border-[#3B82F6] bg-[#3B82F6]/5"
-                        : "border-border hover:border-[#3B82F6]/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      {C_LEVEL_ICONS[role]}
-                      <h4 className="font-semibold text-foreground">{info.label}</h4>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{info.description}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {step === "role" && roleType === "worker" && (
-            <div className="py-6 space-y-5">
-              <Label className="text-base font-medium">Select Specialization</Label>
-              {workersByDepartment.map((group) => (
-                <div key={group.department} className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{group.label}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {group.specializations.map(([key, info]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setSpecialization(key as WorkerSpecialization)}
-                        className={`p-3 rounded-lg border-2 flex items-center gap-2 transition-all text-left ${
-                          specialization === key
-                            ? "border-foreground/50 bg-foreground/5"
-                            : "border-border hover:border-foreground/30"
-                        }`}
-                      >
-                        {WORKER_ICONS[key as WorkerSpecialization]}
-                        <span className="text-sm font-medium">{info.label}</span>
-                      </button>
-                    ))}
-                  </div>
+          {step === "template" && (
+            <div className="py-6">
+              {templatesLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
                 </div>
-              ))}
+              ) : (
+                <TemplatePicker
+                  templates={templates}
+                  roleType={roleType}
+                  selectedId={selectedTemplate?.id ?? null}
+                  onSelect={applyTemplate}
+                  grouped={roleType === "worker"}
+                />
+              )}
             </div>
           )}
 
-          {step === "details" && (
+          {step === "details" && selectedTemplate && (
             <div className="py-6 space-y-4">
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Template</p>
+                <p className="text-sm font-medium text-foreground">{selectedTemplate.displayName}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{selectedTemplate.description}</p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="agent-name">Name *</Label>
                 <Input
                   id="agent-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder={
-                    roleType === "ceo" ? "CEO Agent" :
-                    roleType === "c-level" ? `${C_LEVEL_ROLES[cLevelRole].label} Agent` :
-                    WORKER_SPECIALIZATIONS[specialization]?.label || "Agent"
-                  }
-                  disabled={roleType === "ceo"}
+                  disabled={selectedTemplate.roleType === "ceo"}
                   required
                   className="border-border focus:border-primary focus:ring-primary"
                 />
@@ -356,7 +331,7 @@ export function CreateAgentDialog({
                 />
               </div>
 
-              {roleType === "worker" && (
+              {selectedTemplate.roleType === "worker" && (
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="soul">Custom Instructions (Optional)</Label>
@@ -416,15 +391,17 @@ export function CreateAgentDialog({
                 </>
               )}
 
-              {roleType !== "worker" && (
+              {selectedTemplate.roleType !== "worker" && (
                 <div className="p-4 bg-background rounded-lg">
                   <h4 className="text-sm font-medium text-foreground mb-2">
-                    {roleType === "ceo" ? "CEO" : C_LEVEL_ROLES[cLevelRole]?.label} Configuration
+                    {selectedTemplate.roleType === "ceo"
+                      ? "CEO"
+                      : C_LEVEL_ROLES[selectedTemplate.cLevelRole!]?.label} Configuration
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    {roleType === "ceo"
+                    {selectedTemplate.roleType === "ceo"
                       ? "Orchestrates the entire organization. Delegates to C-level, never executes directly."
-                      : `Orchestrates the ${C_LEVEL_ROLES[cLevelRole]?.department || ""} department. Delegates to specialists.`}
+                      : `Orchestrates the ${C_LEVEL_ROLES[selectedTemplate.cLevelRole!]?.department || ""} department. Delegates to specialists.`}
                     {orgObjective && ` Understands your objective: "${orgObjective}"`}
                   </p>
                   {createHermesProfile && (
@@ -453,7 +430,7 @@ export function CreateAgentDialog({
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  if (step === "details") setStep(roleType === "ceo" ? "level" : "role")
+                  if (step === "details") setStep(roleType === "ceo" ? "level" : "template")
                   else setStep("level")
                 }}
                 className="border-border"
@@ -470,19 +447,30 @@ export function CreateAgentDialog({
             >
               Cancel
             </Button>
-            {step !== "details" ? (
+            {step === "level" && (
               <Button
                 type="button"
-                onClick={step === "level" ? handleLevelNext : handleRoleNext}
+                onClick={handleLevelNext}
                 disabled={roleType === "ceo" && hasCeoAgent}
                 className="bg-primary hover:bg-primary/90"
               >
                 Next
               </Button>
-            ) : (
+            )}
+            {step === "template" && (
+              <Button
+                type="button"
+                onClick={handleTemplateNext}
+                disabled={!selectedTemplate}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Next
+              </Button>
+            )}
+            {step === "details" && (
               <Button
                 type="submit"
-                disabled={isLoading || !name.trim()}
+                disabled={isLoading || !name.trim() || !selectedTemplate}
                 className="bg-primary hover:bg-primary/90"
               >
                 {isLoading ? "Creating..." : "Create Agent"}

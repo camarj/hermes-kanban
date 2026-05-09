@@ -46,46 +46,51 @@ test.describe('Agent Management', () => {
     }
   })
 
-  test('should create new worker agent', async ({ page }) => {
+  test('should create new worker agent from template', async ({ page }) => {
     await page.getByRole('button', { name: /new agent/i }).click()
-    
+
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    
-    await dialog.getByRole('button', { name: /worker agent/i }).click()
-    await dialog.getByRole('button', { name: /backend developer/i }).click()
+
+    // Step 1: pick level "Specialist"
+    await dialog.getByRole('button', { name: /specialist/i }).click()
     await dialog.getByRole('button', { name: 'Next' }).click()
-    
-    await dialog.getByLabel(/name/i).fill('E2E Backend Agent')
+
+    // Step 2: pick a template card (Backend Engineer)
+    await dialog.getByRole('button', { name: /backend engineer/i }).click()
+    await dialog.getByRole('button', { name: 'Next' }).click()
+
+    // Step 3: details — name should be prefilled from template
+    const nameInput = dialog.locator('#agent-name')
+    await expect(nameInput).toHaveValue(/backend engineer/i)
+    await nameInput.fill('E2E Backend Agent')
     await dialog.getByLabel(/description/i).fill('Created by E2E test')
-    
+
     await dialog.getByRole('button', { name: /create agent/i }).click()
-    
+
     await expect(dialog).not.toBeVisible({ timeout: 15000 })
     await expect(page.getByTestId('agent-card').filter({ hasText: 'E2E Backend Agent' })).toBeVisible({ timeout: 5000 })
   })
 
   test('should create CEO agent', async ({ page }) => {
     await page.getByRole('button', { name: /new agent/i }).click()
-    
+
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    
-    await dialog.getByRole('button', { name: /ceo agent/i }).click()
-    
+
+    await dialog.getByRole('button', { name: /^ceo$/i }).click()
+
     const nextButton = dialog.getByRole('button', { name: 'Next' })
     await expect(nextButton).toBeEnabled()
     await nextButton.click()
-    
-    await page.waitForTimeout(2000)
-    
+
     const nameInput = dialog.locator('#agent-name')
     await expect(nameInput).toBeVisible({ timeout: 5000 })
-    await expect(nameInput).toHaveValue('CEO Agent')
-    
+    await expect(nameInput).toHaveValue(/chief executive/i)
+
     const submitButton = dialog.getByRole('button', { name: /create agent/i })
     await submitButton.click()
-    
+
     await expect(dialog).not.toBeVisible({ timeout: 20000 })
   })
 
