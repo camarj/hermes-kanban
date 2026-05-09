@@ -27,6 +27,7 @@ services:
       - "8642:8642"
     volumes:
       - hermes_data:/data
+      - ~/.hermes/profiles:/data/profiles
     environment:
       - HERMES_HOME=/data
       - API_SERVER_ENABLED=true
