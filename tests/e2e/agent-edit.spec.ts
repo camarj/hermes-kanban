@@ -6,6 +6,8 @@ const prisma = new PrismaClient()
 const TEST_AGENT_NAME = "E2E Edit Worker"
 
 test.describe("Agent edit flow", () => {
+  test.describe.configure({ mode: "serial" })
+
   test.beforeAll(async () => {
     const org = await prisma.organization.findUnique({ where: { slug: "acme-corp" } })
     if (!org) return
@@ -52,7 +54,7 @@ test.describe("Agent edit flow", () => {
     const dialog = page.getByRole("dialog")
     await expect(dialog).toBeVisible()
 
-    await expect(dialog.locator("text=Locked")).toBeVisible()
+    await expect(dialog.getByText("Locked", { exact: true })).toBeVisible()
 
     await dialog.locator("#agent-soul").fill("Edited SOUL via Playwright.")
     await dialog.locator("#agent-description").fill("Edited via E2E.")
@@ -76,7 +78,9 @@ test.describe("Agent edit flow", () => {
     await card.getByRole("button", { name: /edit/i }).click()
 
     const dialog = page.getByRole("dialog")
-    await expect(dialog.locator("text=worker")).toBeVisible()
+    // The role badge in the locked panel — exact match avoids collision with
+    // the hermesProfile string and skill names that contain "worker".
+    await expect(dialog.getByText("worker", { exact: true })).toBeVisible()
     expect(await dialog.locator('[name="templateId"], [name="roleType"]').count()).toBe(0)
   })
 })

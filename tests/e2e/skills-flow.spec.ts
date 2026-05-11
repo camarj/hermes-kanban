@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 test.describe("Skills CRUD + marketplace", () => {
+  test.describe.configure({ mode: "serial" })
+
   test.beforeAll(async () => {
     const org = await prisma.organization.findUnique({ where: { slug: "acme-corp" } })
     if (org) {
@@ -60,12 +62,15 @@ test.describe("Skills CRUD + marketplace", () => {
     const installBtn = page.getByRole("button", { name: /install to org/i }).first()
     await expect(installBtn).toBeVisible({ timeout: 5000 })
 
-    // Pick the react-patterns card specifically
-    const reactCard = page.locator("text=/^react-patterns$/").locator("xpath=ancestor::div[1]")
+    // Pick the react-patterns card specifically. The card is the closest
+    // ancestor that has the rounded-lg + p-4 + flex-col layout.
+    const reactCard = page
+      .locator("text=/^react-patterns$/")
+      .locator("xpath=ancestor::div[contains(@class, 'rounded-lg') and contains(@class, 'flex-col')][1]")
     await reactCard.getByRole("button", { name: /install to org/i }).click()
 
-    // After install, button switches to "Installed" badge state
-    await expect(reactCard.locator("text=Installed")).toBeVisible({ timeout: 8000 })
+    // After install, the button is replaced with "Installed" state
+    await expect(reactCard.getByText("Installed").first()).toBeVisible({ timeout: 8000 })
 
     // Verify DB row
     const org = await prisma.organization.findUnique({ where: { slug: "acme-corp" } })
