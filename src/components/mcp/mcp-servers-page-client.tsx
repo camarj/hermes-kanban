@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Plus, Plug, RefreshCw, Pencil, Trash2, Zap, CheckCircle2, XCircle, Info } from "lucide-react"
+import { Plus, Plug, RefreshCw, Pencil, Trash2, Zap, CheckCircle2, XCircle, Info, Loader2 } from "lucide-react"
 import { McpServerForm } from "@/components/mcp/mcp-server-form"
 import type { McpInput } from "@/lib/mcp/queries"
 import type { McpTestResult } from "@/lib/mcp/test-connection"
@@ -48,6 +48,7 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
   const [createOpen, setCreateOpen] = useState(false)
   const [editing, setEditing] = useState<McpServerRow | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<McpServerRow | null>(null)
+  const [lastPropagation, setLastPropagation] = useState<{ affectedAgents: number; serverName: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [testing, setTesting] = useState<string | null>(null)
   const [testResults, setTestResults] = useState<Record<string, McpTestResult>>({})
@@ -119,8 +120,14 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
       })
       const data = await r.json()
       if (!r.ok) throw new Error(data.error || "Failed to update")
+      const affectedAgents = typeof data.affectedAgents === "number" ? data.affectedAgents : 0
+      const serverName = editing.name
       setEditing(null)
       await fetchServers()
+      if (affectedAgents > 0) {
+        setLastPropagation({ affectedAgents, serverName })
+        setTimeout(() => setLastPropagation(null), 8000)
+      }
     } finally {
       setSubmitting(false)
     }
@@ -200,6 +207,15 @@ export function McpServersPageClient({ orgId }: McpServersPageClientProps) {
           </Button>
         </div>
       </div>
+
+      {lastPropagation && (
+        <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm text-primary flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Regenerating <strong>{lastPropagation.affectedAgents}</strong> agent
+          {lastPropagation.affectedAgents === 1 ? "" : "s"} that use{" "}
+          <span className="font-mono">{lastPropagation.serverName}</span>.
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">

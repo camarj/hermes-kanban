@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Agent } from "@/lib/agents/types"
 import { AgentList } from "@/components/agents/agent-list"
 import { CreateAgentDialog } from "@/components/agents/create-agent-dialog"
+import { RegenJobsBanner } from "@/components/agents/regen-jobs-banner"
 import { Button } from "@/components/ui/button"
 import { Plus, RefreshCw, Bot, Activity, AlertCircle } from "lucide-react"
 
@@ -93,6 +94,7 @@ export function AgentsPageClient({
 
   return (
     <div>
+      <RegenJobsBanner orgId={orgId} />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-serif text-3xl font-semibold text-foreground">
