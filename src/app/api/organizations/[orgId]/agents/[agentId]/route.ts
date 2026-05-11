@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/db/prisma"
 import { headers } from "next/headers"
+import { patchAgent } from "@/lib/agents/patch-agent"
 
 export async function GET(
   req: NextRequest,
@@ -83,79 +84,19 @@ export async function PATCH(
 
     const { orgId, agentId } = await params
     const body = await req.json()
-    const {
-      name,
-      description,
-      soulContent,
-      skills,
-      tools,
-      toolsets,
-      mcpServers,
-      webhooks,
-      apiIntegrations,
-      isActive
-    } = body
 
-    // Verify user is member of organization
     const membership = await prisma.organizationMember.findUnique({
-      where: {
-        orgId_userId: {
-          orgId,
-          userId: session.user.id
-        }
-      }
+      where: { orgId_userId: { orgId, userId: session.user.id } }
     })
-
     if (!membership) {
-      return NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    // Verify agent belongs to org
-    const existingAgent = await prisma.agent.findFirst({
-      where: {
-        id: agentId,
-        orgId
-      }
-    })
-
-    if (!existingAgent) {
-      return NextResponse.json(
-        { error: "Agent not found" },
-        { status: 404 }
-      )
+    const result = await patchAgent(orgId, agentId, body)
+    if (result.status === 200) {
+      return NextResponse.json({ agent: result.agent, regen: result.regen })
     }
-
-    // Build update data
-    const updateData: Record<string, unknown> = {}
-    if (name !== undefined) updateData.name = name.trim()
-    if (description !== undefined) updateData.description = description?.trim() || null
-    if (soulContent !== undefined) updateData.soulContent = soulContent?.trim() || null
-    if (skills !== undefined) updateData.skills = skills
-    if (tools !== undefined) updateData.tools = tools
-    if (toolsets !== undefined) updateData.toolsets = toolsets
-    if (mcpServers !== undefined) updateData.mcpServers = mcpServers
-    if (webhooks !== undefined) updateData.webhooks = webhooks
-    if (apiIntegrations !== undefined) updateData.apiIntegrations = apiIntegrations
-    if (isActive !== undefined) updateData.isActive = isActive
-
-    const agent = await prisma.agent.update({
-      where: { id: agentId },
-      data: updateData,
-      include: {
-        template: {
-          select: {
-            id: true,
-            name: true,
-            roleType: true
-          }
-        }
-      }
-    })
-
-    return NextResponse.json({ agent })
+    return NextResponse.json({ error: result.error }, { status: result.status })
   } catch (error) {
     console.error("Failed to update agent:", error)
     return NextResponse.json(
