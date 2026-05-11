@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/db/prisma"
 import { headers } from "next/headers"
 import { getMcpServer, updateMcpServer, deleteMcpServer } from "@/lib/mcp/queries"
+import { propagateMcpUpdate } from "@/lib/mcp/propagate"
 
 async function authorize(orgId: string) {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -64,7 +65,13 @@ export async function PATCH(
       return NextResponse.json({ error: result.error }, { status })
     }
 
-    return NextResponse.json({ server: result.server })
+    const propagation = await propagateMcpUpdate(orgId, serverId)
+
+    return NextResponse.json({
+      server: result.server,
+      affectedAgents: propagation.affectedAgents,
+      dedupedJobs: propagation.dedupedJobs,
+    })
   } catch (error) {
     console.error("Failed to update MCP server:", error)
     return NextResponse.json({ error: "Failed to update MCP server" }, { status: 500 })
