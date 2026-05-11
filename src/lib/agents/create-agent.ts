@@ -16,6 +16,7 @@ export interface CreateAgentInput {
   toolsets?: string[]
   templateId?: string
   mcpServers?: unknown[]
+  mcpServerIds?: string[]
   isActive?: boolean
 }
 
@@ -177,6 +178,8 @@ export async function createAgent(input: CreateAgentInput): Promise<CreateAgentR
   const cLevelRole = input.cLevelRole
   const specialization = input.specialization
 
+  const mcpServerIds = Array.isArray(input.mcpServerIds) ? input.mcpServerIds : []
+
   const agent = await prisma.agent.create({
     data: {
       name: name.trim(),
@@ -190,6 +193,9 @@ export async function createAgent(input: CreateAgentInput): Promise<CreateAgentR
       templateId: templateId || null,
       isActive: isActive ?? true,
       mcpServers: (mcpServers ?? []) as any,
+      mcpServerIds,
+      cLevelRole: cLevelRole || null,
+      specialization: specialization || null,
       webhooks: [],
       apiIntegrations: [],
     },

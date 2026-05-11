@@ -277,6 +277,9 @@ model Agent {
   tools           String[]
   toolsets        String[]
   mcpServers      Json      @default("[]")
+  mcpServerIds    String[]  @default([])
+  cLevelRole      String?
+  specialization  String?
   webhooks        Json      @default("[]")
   apiIntegrations Json      @default("[]")
   isActive        Boolean   @default(true)

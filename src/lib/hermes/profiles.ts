@@ -1,4 +1,3 @@
-import { hermesClient } from "./client"
 import { C_LEVEL_ROLES, WORKER_SPECIALIZATIONS, type CLevelRole, type WorkerSpecialization } from "@/lib/agents/types"
 
 export interface ProfileConfig {
@@ -25,10 +24,21 @@ export interface McpServerConfig {
   tools_filter?: string[]
 }
 
+export interface SkillBundleFile {
+  path: string
+  content: string
+}
+
+export interface SkillBundle {
+  name: string
+  files: SkillBundleFile[]
+}
+
 export interface CreateProfileInput {
   profileName: string
   soulContent: string
   config: ProfileConfig
+  skillBundles?: SkillBundle[]
 }
 
 const CEO_BLOCKED_TOOLSETS = ["terminal", "file", "web", "browser"]
@@ -54,10 +64,11 @@ type SoulData = {
 }
 
 export class ProfileManager {
-  private hermesHome: string
-
-  constructor() {
-    this.hermesHome = hermesClient.hermesHomePath
+  private get hermesHome(): string {
+    return (
+      process.env.HERMES_HOME ||
+      `${process.env.HOME || "/root"}/.hermes`
+    )
   }
 
   async createProfile(input: CreateProfileInput): Promise<{
@@ -65,17 +76,31 @@ export class ProfileManager {
     profilePath: string
     method: "cli" | "filesystem"
   }> {
-    const profilePath = `${this.hermesHome}/profiles/${input.profileName}`
-    const profileDir = profilePath
+    const profileDir = `${this.hermesHome}/profiles/${input.profileName}`
+    const stagingDir = `${this.hermesHome}/profiles/.staging-${input.profileName}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+
+    const { rm, rename, mkdir } = await import("fs/promises")
+    await mkdir(`${this.hermesHome}/profiles`, { recursive: true })
 
     const cliResult = await this.createViaCli(input)
-    if (cliResult) {
-      await this.writeProfileFiles(profileDir, input)
-      return { success: true, profilePath: profileDir, method: "cli" }
-    }
 
-    await this.writeProfileFiles(profileDir, input)
-    return { success: true, profilePath: profileDir, method: "filesystem" }
+    try {
+      await this.writeProfileFiles(stagingDir, input)
+      try {
+        await rm(profileDir, { recursive: true, force: true })
+      } catch {
+        // best-effort cleanup of stale target
+      }
+      await rename(stagingDir, profileDir)
+      return {
+        success: true,
+        profilePath: profileDir,
+        method: cliResult ? "cli" : "filesystem",
+      }
+    } catch (err) {
+      await rm(stagingDir, { recursive: true, force: true }).catch(() => {})
+      throw err
+    }
   }
 
   async deleteProfile(profileName: string): Promise<boolean> {
@@ -611,16 +636,28 @@ ${specializationInstructions}
 
   private async writeProfileFiles(profileDir: string, input: CreateProfileInput): Promise<void> {
     const { writeFile, mkdir } = await import("fs/promises")
-    const { join } = await import("path")
+    const { join, dirname } = await import("path")
 
     await mkdir(profileDir, { recursive: true })
 
     const configYaml = this.serializeConfigYaml(input.config)
     await writeFile(join(profileDir, "config.yaml"), configYaml, "utf-8")
-
     await writeFile(join(profileDir, "SOUL.md"), input.soulContent, "utf-8")
 
-    await mkdir(join(profileDir, "skills"), { recursive: true })
+    const skillsDir = join(profileDir, "skills")
+    await mkdir(skillsDir, { recursive: true })
+
+    if (input.skillBundles?.length) {
+      for (const bundle of input.skillBundles) {
+        const bundleDir = join(skillsDir, bundle.name)
+        await mkdir(bundleDir, { recursive: true })
+        for (const file of bundle.files) {
+          const filePath = join(bundleDir, file.path)
+          await mkdir(dirname(filePath), { recursive: true })
+          await writeFile(filePath, file.content, "utf-8")
+        }
+      }
+    }
   }
 
   private serializeConfigYaml(config: ProfileConfig): string {

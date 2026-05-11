@@ -289,7 +289,7 @@ export async function seedCuratedSkills(): Promise<void> {
       description: skill.description,
       source: "curated" as const,
       isPublic: true,
-      files: skill.files,
+      files: skill.files as unknown as object,
       triggers: skill.triggers,
       userInvocable: skill.userInvocable,
       version: skill.version,

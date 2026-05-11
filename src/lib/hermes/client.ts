@@ -243,6 +243,30 @@ export class HermesClient {
     return new EventSource(url)
   }
 
+  async listRunsByProfile(profileName: string): Promise<RunResponse[]> {
+    try {
+      const res = await fetch(
+        `${this.v1Url}/runs?profile=${encodeURIComponent(profileName)}`,
+        {
+          method: "GET",
+          headers: this.headers,
+          signal: AbortSignal.timeout(5000),
+        },
+      )
+      if (!res.ok) return []
+      const data = (await res.json()) as { runs?: Array<RunResponse & { profile?: string }> }
+      const runs = data.runs ?? []
+      return runs.filter((r) => r.profile === profileName)
+    } catch {
+      return []
+    }
+  }
+
+  async isProfileBusy(profileName: string): Promise<boolean> {
+    const runs = await this.listRunsByProfile(profileName)
+    return runs.some((r) => r.status === "running" || r.status === "started")
+  }
+
   async capabilities(): Promise<CapabilitiesResponse> {
     const res = await fetch(`${this.v1Url}/capabilities`, {
       method: "GET",

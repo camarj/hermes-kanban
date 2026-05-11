@@ -10,7 +10,7 @@ export { ProfileManager } from "./profiles"
 export { KanbanSync } from "./kanban-sync"
 export { kanbanTools, executeKanbanTool } from "./kanban-tools"
 export type { HermesConfig, ChatMessage, ChatCompletionRequest, ChatCompletionResponse, RunRequest, RunResponse } from "./client"
-export type { ProfileConfig, McpServerConfig, CreateProfileInput } from "./profiles"
+export type { ProfileConfig, McpServerConfig, CreateProfileInput, SkillBundle, SkillBundleFile } from "./profiles"
 export type { KanbanTaskStatus, KanbanTask, KanbanSyncOptions } from "./kanban-sync"
 export type { ToolDefinition } from "./kanban-tools"
 
