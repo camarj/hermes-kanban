@@ -12,6 +12,7 @@ import {
   Bot,
   Users,
   Plug,
+  Sparkles,
 } from "lucide-react"
 import { OrganizationSwitcher } from "@/components/organization/organization-switcher"
 import { SignOutButton } from "@/components/auth/sign-out-button"
@@ -88,6 +89,11 @@ export function CollapsibleSidebar({
       label: "MCP Servers",
       href: `/${orgSlug}/mcp-servers`,
       icon: <Plug className="h-4 w-4" />,
+    },
+    {
+      label: "Skills",
+      href: `/${orgSlug}/skills`,
+      icon: <Sparkles className="h-4 w-4" />,
     },
     {
       label: "Settings",
