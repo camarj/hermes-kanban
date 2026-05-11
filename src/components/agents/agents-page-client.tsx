@@ -194,6 +194,7 @@ export function AgentsPageClient({
           <AgentList
             agents={[ceoAgent]}
             orgId={orgId}
+            orgSlug={orgSlug}
             onAgentUpdated={handleAgentUpdated}
             onAgentDeleted={handleAgentDeleted}
           />
@@ -209,6 +210,7 @@ export function AgentsPageClient({
           <AgentList
             agents={workerAgents}
             orgId={orgId}
+            orgSlug={orgSlug}
             onAgentUpdated={handleAgentUpdated}
             onAgentDeleted={handleAgentDeleted}
           />

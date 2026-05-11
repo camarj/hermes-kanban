@@ -9,9 +9,13 @@ export interface Agent {
   tools: string[]
   toolsets: string[]
   mcpServers: unknown[]
+  mcpServerIds?: string[]
+  cLevelRole?: string | null
+  specialization?: string | null
   webhooks: unknown[]
   apiIntegrations: unknown[]
   isActive: boolean
+  profileSyncedAt?: string | null
   createdAt: string
   templateId: string | null
   template: {

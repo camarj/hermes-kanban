@@ -6,17 +6,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Bot, Power, Settings, Trash2 } from "lucide-react"
+import { Bot, Power, Pencil, Trash2 } from "lucide-react"
+import { EditAgentDialog } from "./edit-agent-dialog"
 
 interface AgentListProps {
   agents: Agent[]
   orgId: string
+  orgSlug: string
   onAgentUpdated?: (agent: Agent) => void
   onAgentDeleted?: (agentId: string) => void
 }
 
-export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: AgentListProps) {
+export function AgentList({ agents, orgId, orgSlug, onAgentUpdated, onAgentDeleted }: AgentListProps) {
   const [isUpdating, setIsUpdating] = useState<string | null>(null)
+  const [editing, setEditing] = useState<Agent | null>(null)
 
   async function toggleAgentStatus(agent: Agent) {
     setIsUpdating(agent.id)
@@ -188,8 +191,10 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    onClick={() => setEditing(agent)}
+                    aria-label={`Edit ${agent.name}`}
                   >
-                    <Settings className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -205,6 +210,17 @@ export function AgentList({ agents, orgId, onAgentUpdated, onAgentDeleted }: Age
           </Card>
         )
       })}
+
+      {editing && (
+        <EditAgentDialog
+          open={!!editing}
+          onOpenChange={(o) => !o && setEditing(null)}
+          orgId={orgId}
+          orgSlug={orgSlug}
+          agent={editing}
+          onSaved={(updated) => onAgentUpdated?.(updated)}
+        />
+      )}
     </div>
   )
 }
