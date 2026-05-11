@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -53,23 +53,22 @@ export function EditAgentDialog({
   const [error, setError] = useState<string | null>(null)
   const [regen, setRegen] = useState<RegenResultLite | null>(null)
 
-  // Load MCP servers when the dialog opens
-  // Note: keep this outside useEffect to satisfy the React 19 set-state-in-effect rule.
-  // We trigger fetch once via onOpenChange + initial render.
-  async function loadMcps() {
-    try {
-      const res = await fetch(`/api/organizations/${orgId}/mcp-servers`)
-      const data = await res.json()
-      setMcpServers(data.servers ?? [])
-    } catch {
-      // best-effort
+  useEffect(() => {
+    if (!open) return
+    let cancelled = false
+    fetch(`/api/organizations/${orgId}/mcp-servers`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return
+        setMcpServers(data.servers ?? [])
+      })
+      .catch(() => {
+        // best-effort; selector will show empty state
+      })
+    return () => {
+      cancelled = true
     }
-  }
-
-  // Trigger load on first render if open
-  if (open && mcpServers.length === 0) {
-    void loadMcps()
-  }
+  }, [open, orgId])
 
   const isWorker = agent.template?.roleType === "worker"
 
