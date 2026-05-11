@@ -12,6 +12,7 @@
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:curated-skills": "tsx prisma/seed-curated-skills.ts",
     "test:unit": "vitest",
     "test:unit:run": "vitest run",
     "test:unit:coverage": "vitest run --coverage",

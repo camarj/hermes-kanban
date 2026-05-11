@@ -15,23 +15,23 @@ datasource db {
 // ============================================
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String?
-  emailVerified  Boolean  @default(false)
-  image          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // BetterAuth relations
-  sessions  Session[]
-  accounts  Account[]
+  sessions Session[]
+  accounts Account[]
 
   // App relations
-  ownedOrganizations Organization[]      @relation("OrganizationOwner")
+  ownedOrganizations Organization[]       @relation("OrganizationOwner")
   memberships        OrganizationMember[]
-  createdProjects    Project[]           @relation("ProjectCreator")
-  blockedTasks       Task[]              @relation("TaskBlockedBy")
+  createdProjects    Project[]            @relation("ProjectCreator")
+  blockedTasks       Task[]               @relation("TaskBlockedBy")
   taskComments       TaskComment[]
   notifications      Notification[]
   conversations      Conversation[]
@@ -40,22 +40,22 @@ model User {
 }
 
 model Session {
-  id           String   @id
-  userId       String
-  expiresAt    DateTime
-  ipAddress    String?
-  userAgent    String?
-  token        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  token     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model Account {
-  id                    String   @id
+  id                    String    @id
   userId                String
   accountId             String
   providerId            String
@@ -66,8 +66,8 @@ model Account {
   scope                 String?
   idToken               String?
   password              String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -88,22 +88,23 @@ model Verification {
 // ============================================
 
 model Organization {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  objective   String?
-  ownerId     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  objective String?
+  ownerId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  owner       User?               @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-  members     OrganizationMember[]
-  projects    Project[]
-  tasks       Task[]
-  agents      Agent[]
-  templates   AgentTemplate[]
-  mcpServers  McpServer[]
+  owner         User?                @relation("OrganizationOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  members       OrganizationMember[]
+  projects      Project[]
+  tasks         Task[]
+  agents        Agent[]
+  templates     AgentTemplate[]
+  mcpServers    McpServer[]
+  skills        Skill[]
   notifications Notification[]
   conversations Conversation[]
 
@@ -111,17 +112,17 @@ model Organization {
 }
 
 model OrganizationMember {
-  id              String   @id @default(cuid())
-  orgId           String
-  userId          String
-  role            String   @default("member") // owner, board, member
+  id               String   @id @default(cuid())
+  orgId            String
+  userId           String
+  role             String   @default("member") // owner, board, member
   responsibilities String[]
-  domains         String[]
-  joinedAt        DateTime @default(now())
+  domains          String[]
+  joinedAt         DateTime @default(now())
 
   // Relations
-  organization    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([orgId, userId])
   @@map("organization_members")
@@ -132,15 +133,15 @@ model OrganizationMember {
 // ============================================
 
 model Invitation {
-  id          String    @id @default(cuid())
-  orgId       String
-  email       String
-  role        String    @default("board")
-  invitedBy   String?
-  token       String    @unique
-  expiresAt   DateTime
-  acceptedAt  DateTime?
-  createdAt   DateTime  @default(now())
+  id         String    @id @default(cuid())
+  orgId      String
+  email      String
+  role       String    @default("board")
+  invitedBy  String?
+  token      String    @unique
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
 
   @@map("invitations")
 }
@@ -172,42 +173,42 @@ model Project {
 // ============================================
 
 model Task {
-  id                String    @id @default(cuid())
-  hermesTaskId      String?   @unique
-  projectId         String
-  orgId             String
-  title             String
-  body              String?
-  status            String    @default("triage") // triage, todo, ready, running, blocked, done, archived
-  priority          Int       @default(0)
-  assignee          String?   // Profile name del agente
-  tenant            String?
-  workspaceType     String    @default("scratch") // scratch, worktree, dir
-  workspacePath     String?
-  blockedReason     String?
-  blockedBy         String?
-  approvalRequired  Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  completedAt       DateTime?
-  hermesMetadata    Json?     @default("{}")
+  id               String    @id @default(cuid())
+  hermesTaskId     String?   @unique
+  projectId        String
+  orgId            String
+  title            String
+  body             String?
+  status           String    @default("triage") // triage, todo, ready, running, blocked, done, archived
+  priority         Int       @default(0)
+  assignee         String? // Profile name del agente
+  tenant           String?
+  workspaceType    String    @default("scratch") // scratch, worktree, dir
+  workspacePath    String?
+  blockedReason    String?
+  blockedBy        String?
+  approvalRequired Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  completedAt      DateTime?
+  hermesMetadata   Json?     @default("{}")
 
   // Relations
-  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  organization Organization  @relation(fields: [orgId], references: [id])
-  blocker      User?         @relation("TaskBlockedBy", fields: [blockedBy], references: [id])
-  parentLinks  TaskLink[]    @relation("ParentTask")
-  childLinks   TaskLink[]    @relation("ChildTask")
-  comments     TaskComment[]
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  organization  Organization   @relation(fields: [orgId], references: [id])
+  blocker       User?          @relation("TaskBlockedBy", fields: [blockedBy], references: [id])
+  parentLinks   TaskLink[]     @relation("ParentTask")
+  childLinks    TaskLink[]     @relation("ChildTask")
+  comments      TaskComment[]
   notifications Notification[]
 
   @@map("tasks")
 }
 
 model TaskLink {
-  id            String   @id @default(cuid())
-  parentTaskId  String
-  childTaskId   String
-  createdAt     DateTime @default(now())
+  id           String   @id @default(cuid())
+  parentTaskId String
+  childTaskId  String
+  createdAt    DateTime @default(now())
 
   // Relations
   parentTask Task @relation("ParentTask", fields: [parentTaskId], references: [id], onDelete: Cascade)
@@ -218,15 +219,15 @@ model TaskLink {
 }
 
 model TaskComment {
-  id          String   @id @default(cuid())
-  taskId      String
-  authorType  String   // user, agent
-  authorId    String   // user_id o profile_name
-  body        String
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  taskId     String
+  authorType String // user, agent
+  authorId   String // user_id o profile_name
+  body       String
+  createdAt  DateTime @default(now())
 
   // Relations
-  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user User? @relation(fields: [authorId], references: [id])
 
   @@map("task_comments")
@@ -237,20 +238,20 @@ model TaskComment {
 // ============================================
 
 model AgentTemplate {
-  id               String   @id @default(cuid())
-  orgId            String?
-  name             String
-  displayName      String?
-  description      String?
-  roleType         String   @default("worker") // ceo, orchestrator, worker
-  soulContent      String?
-  defaultSkills    String[]
-  defaultTools     String[]
-  defaultToolsets  String[]
-  modelOverride    String?
-  createdBy        String?
-  isPublic         Boolean  @default(false)
-  createdAt        DateTime @default(now())
+  id              String   @id @default(cuid())
+  orgId           String?
+  name            String
+  displayName     String?
+  description     String?
+  roleType        String   @default("worker") // ceo, orchestrator, worker
+  soulContent     String?
+  defaultSkills   String[]
+  defaultTools    String[]
+  defaultToolsets String[]
+  modelOverride   String?
+  createdBy       String?
+  isPublic        Boolean  @default(false)
+  createdAt       DateTime @default(now())
 
   // Relations
   organization Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
@@ -265,27 +266,28 @@ model AgentTemplate {
 // ============================================
 
 model Agent {
-  id                String   @id @default(cuid())
-  orgId             String
-  templateId        String?
-  hermesProfile     String   @unique
-  name              String
-  description       String?
-  soulContent       String?
-  skills            String[]
-  tools             String[]
-  toolsets          String[]
-  mcpServers        Json     @default("[]")
-  webhooks          Json     @default("[]")
-  apiIntegrations   Json     @default("[]")
-  isActive          Boolean  @default(true)
-  profileSyncedAt   DateTime?
-  createdAt         DateTime @default(now())
+  id              String    @id @default(cuid())
+  orgId           String
+  templateId      String?
+  hermesProfile   String    @unique
+  name            String
+  description     String?
+  soulContent     String?
+  skills          String[]
+  tools           String[]
+  toolsets        String[]
+  mcpServers      Json      @default("[]")
+  webhooks        Json      @default("[]")
+  apiIntegrations Json      @default("[]")
+  isActive        Boolean   @default(true)
+  profileSyncedAt DateTime?
+  createdAt       DateTime  @default(now())
 
   // Relations
-  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  template     AgentTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  organization  Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  template      AgentTemplate?    @relation(fields: [templateId], references: [id], onDelete: SetNull)
   conversations Conversation[]
+  regenJobs     ProfileRegenJob[]
 
   @@map("agents")
 }
@@ -295,15 +297,15 @@ model Agent {
 // ============================================
 
 model McpServer {
-  id           String   @id @default(cuid())
-  orgId        String
-  name         String
-  transport    String   @default("stdio") // stdio, http
-  command      String?
-  url          String?
-  envVars      Json     @default("{}")
-  toolsFilter  String[]
-  createdAt    DateTime @default(now())
+  id          String   @id @default(cuid())
+  orgId       String
+  name        String
+  transport   String   @default("stdio") // stdio, http
+  command     String?
+  url         String?
+  envVars     Json     @default("{}")
+  toolsFilter String[]
+  createdAt   DateTime @default(now())
 
   // Relations
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
@@ -312,19 +314,74 @@ model McpServer {
 }
 
 // ============================================
+// SKILLS (Phase 3)
+// ============================================
+
+enum SkillSource {
+  custom
+  github
+  curated
+}
+
+model Skill {
+  id            String      @id @default(cuid())
+  orgId         String?
+  name          String
+  description   String?
+  source        SkillSource
+  sourceUrl     String?
+  sourceRef     String?
+  version       String      @default("1.0.0")
+  isPublic      Boolean     @default(false)
+  files         Json        @default("[]")
+  triggers      String[]
+  userInvocable Boolean     @default(false)
+  createdBy     String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  organization Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, name])
+  @@map("skills")
+}
+
+// ============================================
+// PROFILE REGEN JOB QUEUE (Phase 3)
+// ============================================
+
+model ProfileRegenJob {
+  id         String    @id @default(cuid())
+  agentId    String
+  reason     String
+  status     String    @default("pending")
+  error      String?
+  attempts   Int       @default(0)
+  createdAt  DateTime  @default(now())
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([agentId, status])
+  @@map("profile_regen_jobs")
+}
+
+// ============================================
 // NOTIFICATIONS
 // ============================================
 
 model Notification {
-  id         String    @id @default(cuid())
-  userId     String
-  orgId      String?
-  type       String
-  taskId     String?
-  title      String
-  body       String?
-  readAt     DateTime?
-  createdAt  DateTime  @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  orgId     String?
+  type      String
+  taskId    String?
+  title     String
+  body      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
 
   // Relations
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -339,15 +396,15 @@ model Notification {
 // ============================================
 
 model WebhookEvent {
-  id         String   @id @default(cuid())
-  orgId      String?
-  webhookId  String?
-  eventType  String
-  payload    Json
-  status     String   @default("pending") // pending, delivered, failed
-  attempts   Int      @default(0)
+  id          String    @id @default(cuid())
+  orgId       String?
+  webhookId   String?
+  eventType   String
+  payload     Json
+  status      String    @default("pending") // pending, delivered, failed
+  attempts    Int       @default(0)
   deliveredAt DateTime?
-  createdAt  DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   @@map("webhook_events")
 }
@@ -367,9 +424,9 @@ model Conversation {
   updatedAt DateTime @updatedAt
 
   // Relations
-  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  agent        Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agent        Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
   messages     ChatMessage[]
 
   @@map("conversations")
@@ -378,7 +435,7 @@ model Conversation {
 model ChatMessage {
   id             String   @id @default(cuid())
   conversationId String
-  role           String   // "user" | "assistant" | "system"
+  role           String // "user" | "assistant" | "system"
   content        String   @db.Text
   createdAt      DateTime @default(now())
 
